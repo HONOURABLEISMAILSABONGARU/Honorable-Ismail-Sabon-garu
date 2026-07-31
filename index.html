@@ -26,39 +26,36 @@
       <input type="file" accept=".png,.jpg,.jpeg"><br><br>
 
       <input type="text" id="firstName" name="firstName" placeholder="Enter First Name" style="width:100%;padding:10px;" required><br><br>
-      <label>Middle Name</label><br>
-      <input type="text" style="width:100%;padding:10px;"><br><br>
+      <input type="text" id="middleName" name="middleName" placeholder="Enter Middle Name" style="width:100%;padding:10px;" required><br><br>
 
-      <label>Last Name</label><br>
-      <input type="text" style="width:100%;padding:10px;"><br><br>
+      <input type="text" id="lastName" name="lastName" placeholder="Enter Last Name" style="width:100%;padding:10px;" required><br><br>
 
-      <label>Address</label><br>
-      <input type="text" style="width:100%;padding:10px;"><br><br>
+      <input type="text" id="address" name="address" placeholder="Enter Your Address" style="width:100%;padding:10px;" required><br><br>
 
-      <label>Phone Number</label><br>
-      <input type="tel" id="phoneNumber" placeholder="Enter Phone Number" maxlength="11" style="width:100%;padding:10px;" required><br><br>
-        
+      <input type="tel" id="phoneNumber" name="phoneNumber" placeholder="Enter Phone Number" maxlength="11" style="width:100%;padding:10px;" required><br><br>
 
       <label>State</label><br>
-      <select style="width:100%;padding:10px;">
-        <option>Jigawa</option>
-      </select><br><br>
+<select id="state" name="state" style="width:100%;padding:10px;" required>
+  <option value="">-- Select State --</option>
+  <option value="Jigawa">Jigawa</option>
+</select><br><br>
 
-      <label>LGA</label><br>
-      <select style="width:100%;padding:10px;">
-        <option>Hadejia</option>
-      </select><br><br>
+<label>LGA</label><br>
+<select id="lga" name="lga" style="width:100%;padding:10px;" required>
+  <option value="">-- Select LGA --</option>
+  <option value="Hadejia">Hadejia</option>
+</select><br><br>
 
-      <label>Ward</label><br>
-      <select style="width:100%;padding:10px;">
-        <option>Sabon Garu</option>
-      </select><br><br>
+    <label>Ward</label><br>
+<select id="ward" name="ward" style="width:100%;padding:10px;" required>
+  <option value="">-- Select Ward --</option>
+  <option value="Sabon Garu">Sabon Garu</option>
+</select><br><br>
 
-      <button style="width:100%;padding:15px;background:green;color:white;border:none;border-radius:5px;">
-        Submit Application
-      </button>
-
-    </form>
+<button type="submit" id="submitBtn" style="width:100%;padding:15px;background:#006400;color:#fff;border:none;border-radius:8px;font-size:17px;font-weight:bold;cursor:pointer;">
+  Submit Application
+</button>
+    <form id="registrationForm">
 
   </div>
 <script src="script.js"></script>
