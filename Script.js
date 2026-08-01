@@ -41,16 +41,12 @@ form.addEventListener("submit", async (e) => {
       createdAt: new Date()
     });
 
-    alert(
-      "Application Submitted Successfully!\n\n" +
-      "Application ID: " + appId +
-      "\n\nPlease save your Application ID."
-    );
+    alert("Application Submitted Successfully!\n\nApplication ID: " + appId);
 
     form.reset();
 
   } catch (error) {
     alert("Error: " + error.message);
-    console.error(error);
+    console.log(error);
   }
 });
