@@ -1,15 +1,50 @@
-document.addEventListener("DOMContentLoaded", function () {
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.0/firebase-app.js";
+import {
+  getFirestore,
+  collection,
+  addDoc
+} from "https://www.gstatic.com/firebasejs/12.17.0/firebase-firestore.js";
 
-  const form = document.getElementById("registrationForm");
+const firebaseConfig = {
+  apiKey: "AIzaSyDvjnzN9K6fntjv8CaKK-6ENjjyYnMOWOE",
+  authDomain: "honourable-ismail-sabon-garu.firebaseapp.com",
+  projectId: "honourable-ismail-sabon-garu",
+  storageBucket: "honourable-ismail-sabon-garu.firebasestorage.app",
+  messagingSenderId: "433993330936",
+  appId: "1:433993330936:web:1c289e2fdf819d4cb3cb0d"
+};
 
-  form.addEventListener("submit", function (e) {
-    e.preventDefault();
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
-    const appId = "TTT-SBNGR-2027-APP-00121";
+const form = document.getElementById("registrationForm");
 
-alert(
-  "Application Submitted Successfully!\n\n" +
-  "Application ID: " + appId + "\n\n" +
-  "IMPORTANT NOTICE:\n" +
-  "Please save your Application ID or print it. You will be required to present it when collecting your ID Card."
-);
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const appId =
+    "TTT-SBNGR-2027-APP-" +
+    Math.floor(10000 + Math.random() * 90000);
+
+  try {
+    await addDoc(collection(db, "applications"), {
+      applicationId: appId,
+      firstName: document.getElementById("firstName").value,
+      middleName: document.getElementById("middleName").value,
+      lastName: document.getElementById("lastName").value,
+      address: document.getElementById("address").value,
+      phone: document.getElementById("phone").value,
+      createdAt: new Date()
+    });
+
+    alert(
+      "Application Submitted Successfully!\n\nApplication ID: " +
+      appId
+    );
+
+    form.reset();
+
+  } catch (error) {
+    alert("Error: " + error.message);
+  }
+});
