@@ -34,6 +34,7 @@ form.addEventListener("submit", async (e) => {
       lastName: document.getElementById("lastName").value,
       address: document.getElementById("address").value,
       phoneNumber: document.getElementById("phoneNumber").value,
+      gender: document.getElementById("gender").value,
       createdAt: new Date()
     });
 
