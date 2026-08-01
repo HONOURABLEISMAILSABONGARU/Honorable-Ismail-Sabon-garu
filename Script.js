@@ -33,7 +33,7 @@ form.addEventListener("submit", async (e) => {
       middleName: document.getElementById("middleName").value,
       lastName: document.getElementById("lastName").value,
       address: document.getElementById("address").value,
-      phone: document.getElementById("phone").value,
+      phoneNumber: document.getElementById("phoneNumber").value,
       createdAt: new Date()
     });
 
