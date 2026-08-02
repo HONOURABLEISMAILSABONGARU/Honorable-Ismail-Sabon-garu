@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin Login</title>
+<title>Administrator Login</title>
 
 <style>
 *{
@@ -14,101 +14,124 @@ font-family:Arial,sans-serif;
 }
 
 body{
-background:linear-gradient(135deg,#006400,#0b8f4d);
+background:#f4f7f6;
 display:flex;
 justify-content:center;
 align-items:center;
-height:100vh;
+min-height:100vh;
 padding:20px;
 }
 
-.login-box{
+.card{
 background:#fff;
 width:100%;
-max-width:400px;
+max-width:430px;
 padding:30px;
 border-radius:20px;
-box-shadow:0 10px 30px rgba(0,0,0,.25);
+box-shadow:0 10px 30px rgba(0,0,0,.15);
 text-align:center;
 }
 
-.warning{
-background:#fff3cd;
-color:#856404;
-padding:12px;
-border-radius:10px;
-margin-bottom:20px;
-font-size:14px;
-font-weight:bold;
+.icon{
+width:90px;
+height:90px;
+margin:auto;
+border-radius:50%;
+background:#006400;
+display:flex;
+justify-content:center;
+align-items:center;
+font-size:45px;
+color:white;
 }
 
 h2{
-color:#006400;
-margin-bottom:20px;
+margin-top:20px;
+color:#0f172a;
+}
+
+.message{
+margin-top:15px;
+color:#555;
+line-height:1.7;
 }
 
 input{
 width:100%;
-padding:14px;
-margin:10px 0;
+padding:15px;
+margin-top:15px;
 border:2px solid #ddd;
 border-radius:10px;
 font-size:16px;
+outline:none;
+}
+
+input:focus{
+border-color:#006400;
 }
 
 button{
 width:100%;
 padding:15px;
+margin-top:18px;
 background:#006400;
-color:#fff;
+color:white;
 border:none;
 border-radius:10px;
 font-size:17px;
 font-weight:bold;
 cursor:pointer;
-margin-top:10px;
-}
-
-button:hover{
-background:#0b8f4d;
 }
 
 .back{
-margin-top:20px;
-}
-
-.back a{
-color:#006400;
+display:block;
+margin-top:15px;
 text-decoration:none;
+color:#006400;
 font-weight:bold;
 }
 </style>
+
 </head>
 
 <body>
 
-<div class="login-box">
+<div class="card">
 
-<div class="warning">
-⚠️ Restricted Access.<br>
-This page is for Administrator only.
+<div class="icon">
+🔒
 </div>
 
-<h2>🔒 Admin Login</h2>
+<h2>Restricted Access</h2>
 
-<input type="text" id="username" placeholder="Username">
+<p class="message">
+This area is reserved for the System Administrator only.
+<br><br>
+Only authorized administrators are allowed to continue.
+</p>
 
-<input type="password" id="password" placeholder="Password">
+<input
+type="text"
+id="username"
+placeholder="Administrator Username">
 
-<button onclick="login()">Login</button>
+<input
+type="password"
+id="password"
+placeholder="Administrator Password">
 
-<div class="back">
-<a href="index.html">← Back to Registration</a>
-</div>
+<button onclick="login()">
+Login
+</button>
+
+<a class="back" href="index.html">
+← Back to Registration
+</a>
 
 </div>
 
 <script>
+
 function login(){
 
 const username=document.getElementById("username").value;
@@ -116,18 +139,16 @@ const password=document.getElementById("password").value;
 
 if(username==="Admin" && password==="Sabongaru@12"){
 
-alert("Login Successful");
-
-// Daga baya za mu maye gurbin wannan
 window.location.href="dashboard.html";
 
 }else{
 
-alert("Invalid Username or Password");
+alert("Invalid Username or Password.");
 
 }
 
 }
+
 </script>
 
 </body>
