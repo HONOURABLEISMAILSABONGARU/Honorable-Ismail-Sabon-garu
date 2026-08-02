@@ -239,19 +239,5 @@ Check Again
 `;
 }
 function adminWarning() {
-
-    const proceed = confirm(
-`⚠️ RESTRICTED ACCESS
-
-This area is reserved for the Administrator only.
-
-If you are not the Administrator, click Cancel.
-
-Click OK to continue.`
-    );
-
-    if (proceed) {
-        window.location.href = "admin.html";
-    }
-
+    window.location.href = "admin.html";
 }
