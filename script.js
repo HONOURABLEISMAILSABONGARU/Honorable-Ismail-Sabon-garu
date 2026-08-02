@@ -1,10 +1,34 @@
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
+import {
+  getFirestore,
+  collection,
+  addDoc
+} from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
+const firebaseConfig = {
+  apiKey: "AIzaSyDvjnzN9K6fntjv8CaKK-6ENjjyYnMOWOE",
+  authDomain: "honourable-ismail-sabon-garu.firebaseapp.com",
+  projectId: "honourable-ismail-sabon-garu",
+  storageBucket: "honourable-ismail-sabon-garu.firebasestorage.app",
+  messagingSenderId: "433993330936",
+  appId: "1:433993330936:web:1c289e2fdf819d4cb3cb0d"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 const form = document.getElementById("registrationForm");
 
 form.addEventListener("submit", function (e) {
     e.preventDefault();
 
-    const applicationId = "TTT-" + Math.floor(100000 + Math.random() * 900000);
-
+    const firstName = document.getElementById("firstName").value;
+const middleName = document.getElementById("middleName").value;
+const lastName = document.getElementById("lastName").value;
+const address = document.getElementById("address").value;
+const phoneNumber = document.getElementById("phoneNumber").value;
+const gender = document.getElementById("gender").value;
+const state = document.getElementById("state").value;
+const lga = document.getElementById("lga").value;
+const ward = document.getElementById("ward").value;
     // Processing Screen
     document.body.innerHTML = `
     <div style="
