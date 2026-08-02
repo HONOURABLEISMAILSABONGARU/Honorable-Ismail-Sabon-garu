@@ -141,12 +141,100 @@ form.addEventListener("submit", function (e) {
     },2000);
 
 });
-function showComingSoon() {
-    alert(
-`Coming Soon!
+function showComingSoon(){
 
-Your ID Card has not been approved by the administrator.
+document.body.innerHTML=`
 
-Please wait for approval.`
-    );
+<div style="
+min-height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+background:linear-gradient(135deg,#f4f7f6,#eaf4ee);
+font-family:Arial,sans-serif;
+padding:20px;
+">
+
+<div style="
+background:#fff;
+max-width:430px;
+width:100%;
+padding:30px;
+border-radius:20px;
+text-align:center;
+box-shadow:0 10px 30px rgba(0,0,0,.15);
+border-top:6px solid #006400;
+">
+
+<div style="
+width:90px;
+height:90px;
+margin:auto;
+border-radius:50%;
+background:#1d4ed8;
+color:#fff;
+font-size:45px;
+display:flex;
+justify-content:center;
+align-items:center;
+">
+🪪
+</div>
+
+<h2 style="
+margin-top:20px;
+color:#1d4ed8;
+">
+Coming Soon
+</h2>
+
+<p style="
+color:#555;
+line-height:1.7;
+margin-top:15px;
+">
+Your ID Card has not been approved by the administrator.<br><br>
+
+Please wait for administrator approval.
+</p>
+
+<div style="
+display:flex;
+gap:10px;
+margin-top:25px;
+">
+
+<button onclick="location.reload()" style="
+flex:1;
+padding:14px;
+background:#006400;
+color:white;
+border:none;
+border-radius:10px;
+font-size:16px;
+cursor:pointer;
+">
+Back To Home
+</button>
+
+<button onclick="showComingSoon()" style="
+flex:1;
+padding:14px;
+background:#1d4ed8;
+color:white;
+border:none;
+border-radius:10px;
+font-size:16px;
+cursor:pointer;
+">
+Check Again
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+`;
 }
