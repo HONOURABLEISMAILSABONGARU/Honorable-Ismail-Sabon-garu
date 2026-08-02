@@ -156,3 +156,25 @@ input[type="file"]{
         height:95px;
     }
   }
+/* ===========================
+   FOOTER
+=========================== */
+
+.footer{
+    text-align: center;
+    margin-top: 20px;
+    padding: 15px;
+}
+
+.footer p{
+    font-size: 14px;
+    color: #555;
+    margin: 3px 0;
+}
+
+.footer h3{
+    font-size: 18px;
+    color: #006400;
+    margin: 3px 0;
+    font-weight: bold;
+}
