@@ -99,19 +99,40 @@ form.addEventListener("submit", function (e) {
                     ${applicationId}
                 </h3>
             </div>
+<div style="
+    display:flex;
+    gap:10px;
+    margin-top:20px;
+">
 
-            <button onclick="location.reload()" style="
-                width:100%;
-                padding:15px;
-                background:#006400;
-                color:white;
-                border:none;
-                border-radius:10px;
-                font-size:18px;
-                cursor:pointer;
-            ">
-                Back To Home
-            </button>
+<button onclick="location.reload()" style="
+    flex:1;
+    padding:15px;
+    background:#006400;
+    color:white;
+    border:none;
+    border-radius:10px;
+    font-size:16px;
+    cursor:pointer;
+">
+    Back To Home
+</button>
+
+<button onclick="showComingSoon()" style="
+    flex:1;
+    padding:15px;
+    background:#1d4ed8;
+    color:white;
+    border:none;
+    border-radius:10px;
+    font-size:16px;
+    cursor:pointer;
+">
+    Print Your ID Card
+</button>
+
+</div>
+            
 
         </div>
         </div>
@@ -120,3 +141,12 @@ form.addEventListener("submit", function (e) {
     },2000);
 
 });
+function showComingSoon() {
+    alert(
+`Coming Soon!
+
+Your ID Card has not been approved by the administrator.
+
+Please wait for approval.`
+    );
+}
