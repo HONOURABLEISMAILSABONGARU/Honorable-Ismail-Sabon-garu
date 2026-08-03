@@ -1,13 +1,13 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
 
 import {
-  import {
   getFirestore,
   collection,
   getDocs,
   doc,
   updateDoc
 } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
+
 const firebaseConfig = {
   apiKey: "AIzaSyDvjnzN9K6fntjv8CaKK-6ENjjyYnMOWOE",
   authDomain: "honourable-ismail-sabon-garu.firebaseapp.com",
@@ -16,6 +16,7 @@ const firebaseConfig = {
   messagingSenderId: "433993330936",
   appId: "1:433993330936:web:1c289e2fdf819d4cb3cb0d"
 };
+
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
@@ -26,32 +27,25 @@ async function loadApplications() {
 
     const snapshot = await getDocs(collection(db, "registrations"));
 
-    totalApplications.innerHTML = snapshot.size + " Applications";
+    totalApplications.textContent = snapshot.size + " Applications";
 
     applicantsList.innerHTML = "";
 
-    snapshot.forEach((doc) => {
+    snapshot.forEach((documentItem) => {
 
-        const data = doc.data();
+        const data = documentItem.data();
 
         applicantsList.innerHTML += `
         <div style="border:1px solid #ddd;padding:15px;border-radius:10px;margin-bottom:15px;">
             <b>${data.firstName} ${data.lastName}</b><br>
             📞 ${data.phoneNumber}<br>
             🆔 ${data.applicationId}<br>
-       Status: <b>${data.status}</b><br><br>
+            Status: <b>${data.status}</b><br><br>
 
-<button onclick="approveApplication('${doc.id}')" style="
-padding:10px 15px;
-background:#16a34a;
-color:white;
-border:none;
-border-radius:8px;
-cursor:pointer;
-margin-right:10px;
-">
-Approve
-</button>
+            <button onclick="approveApplication('${documentItem.id}')"
+            style="padding:10px 15px;background:#16a34a;color:#fff;border:none;border-radius:8px;cursor:pointer;">
+                Approve
+            </button>
         </div>
         `;
     });
@@ -59,14 +53,15 @@ Approve
 }
 
 loadApplications();
-window.approveApplication = async function(id) {
 
-    await updateDoc(doc(db, "registrations", id), {
-        status: "Approved"
+window.approveApplication = async function(id){
+
+    await updateDoc(doc(db,"registrations",id),{
+        status:"Approved"
     });
 
-    alert("Application Approved Successfully.");
+    alert("Application Approved Successfully");
 
-    location.reload();
+    loadApplications();
 
-      }
+          }
