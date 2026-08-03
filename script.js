@@ -177,9 +177,133 @@ const ward = document.getElementById("ward").value;
     }, 5000);
 
 });
+window.showComingSoon = async function () {
 
-window.showComingSoon = function () {
+const applicationId = localStorage.getItem("applicationId");
 
+const q = query(
+    collection(db, "registrations"),
+    where("applicationId", "==", applicationId)
+);
+
+const snapshot = await getDocs(q);
+
+if (snapshot.empty) {
+    alert("Application not found.");
+    return;
+}
+
+const data = snapshot.docs[0].data();
+
+if (data.status === "Pending") {
+
+document.body.innerHTML = `
+<div style="
+min-height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+background:#f4f7f6;
+font-family:Arial,sans-serif;
+padding:20px;
+">
+
+<div style="
+background:#fff;
+max-width:420px;
+width:100%;
+padding:30px;
+border-radius:20px;
+text-align:center;
+box-shadow:0 10px 30px rgba(0,0,0,.15);
+">
+
+<h2 style="color:#f59e0b;">🪪 ID Card Pending</h2>
+
+<p style="margin-top:20px;line-height:1.8;">
+Your ID Card is currently <b>Pending</b>.<br><br>
+Please wait until the Administrator approves your application.
+</p>
+
+<button onclick="location.reload()"
+style="
+margin-top:20px;
+padding:14px 20px;
+background:#006400;
+color:#fff;
+border:none;
+border-radius:10px;
+cursor:pointer;">
+Back To Home
+</button>
+
+</div>
+</div>
+`;
+
+} else {
+
+document.body.innerHTML = `
+<div style="
+min-height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+background:#f4f7f6;
+padding:20px;
+font-family:Arial,sans-serif;
+">
+
+<div style="
+width:360px;
+background:white;
+border-radius:18px;
+padding:25px;
+box-shadow:0 10px 30px rgba(0,0,0,.15);
+text-align:center;
+">
+
+<h2 style="color:#006400;">
+HONOURABLE ISMAIL SABON GARU
+</h2>
+
+<h3>ID CARD</h3>
+
+<p><b>Name:</b> ${data.firstName} ${data.lastName}</p>
+
+<p><b>Phone:</b> ${data.phoneNumber}</p>
+
+<p><b>Application ID:</b> ${data.applicationId}</p>
+
+<p><b>Ward:</b> ${data.ward}</p>
+
+<p><b>LGA:</b> ${data.lga}</p>
+
+<p><b>State:</b> ${data.state}</p>
+
+<p style="color:green;font-weight:bold;">
+🟢 APPROVED
+</p>
+
+<button onclick="window.print()"
+style="
+margin-top:20px;
+padding:14px 20px;
+background:#006400;
+color:white;
+border:none;
+border-radius:10px;
+cursor:pointer;">
+Print ID Card
+</button>
+
+</div>
+</div>
+`;
+
+}
+
+};
 document.body.innerHTML = `
 <div style="
 min-height:100vh;
