@@ -63,7 +63,27 @@ const ward = document.getElementById("ward").value;
     }
     </style>
     `;
-
+  try {
+    await addDoc(collection(db, "registrations"), {
+        applicationId: applicationId,
+        firstName: firstName,
+        middleName: middleName,
+        lastName: lastName,
+        address: address,
+        phoneNumber: phoneNumber,
+        gender: gender,
+        state: state,
+        lga: lga,
+        ward: ward,
+        status: "Pending",
+        createdAt: new Date()
+    });
+} catch (error) {
+    console.error("Error saving registration:", error);
+    alert("Registration could not be saved. Please try again.");
+    return;
+      }  
+});
     setTimeout(function(){
 
         document.body.innerHTML = `
