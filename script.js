@@ -1,5 +1,4 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
-
 import {
   getFirestore,
   collection,
@@ -23,71 +22,47 @@ const db = getFirestore(app);
 
 const form = document.getElementById("registrationForm");
 
-form.addEventListener("submit", async function (e) {
+form.addEventListener("submit", async (e) => {
 
     e.preventDefault();
 
-    const applicationId = "TTT-" + Math.floor(100000 + Math.random() * 900000);
+    const applicationId = "TTT-" + Date.now();
 
     localStorage.setItem("applicationId", applicationId);
 
-    const firstName = document.getElementById("firstName").value;
-    const middleName = document.getElementById("middleName").value;
-    const lastName = document.getElementById("lastName").value;
-    const address = document.getElementById("address").value;
-    const phoneNumber = document.getElementById("phoneNumber*").value;
-    const gender = document.getElementById("gender").value;
-    const state = document.getElementById("state").value;
-    const lga = document.getElementById("lga").value;
-    const ward = document.getElementById("ward").value;
-      try {
+    const registration = {
+        applicationId: applicationId,
+        firstName: document.getElementById("firstName").value,
+        middleName: document.getElementById("middleName").value,
+        lastName: document.getElementById("lastName").value,
+        address: document.getElementById("address").value,
+        phoneNumber: document.getElementById("phoneNumber").value,
+        gender: document.getElementById("gender").value,
+        state: document.getElementById("state").value,
+        lga: document.getElementById("lga").value,
+        ward: document.getElementById("ward").value,
+        status: "Pending",
+        createdAt: new Date()
+    };
 
-        await addDoc(collection(db, "registrations"), {
-            applicationId: applicationId,
-            firstName: firstName,
-            middleName: middleName,
-            lastName: lastName,
-            address: address,
-            phoneNumber: phoneNumber,
-            gender: gender,
-            state: state,
-            lga: lga,
-            ward: ward,
-            status: "Pending",
-            createdAt: new Date()
-        });
+    try {
+
+        await addDoc(collection(db, "registrations"), registration);
 
     } catch (error) {
 
         console.error(error);
-        alert("Registration could not be saved.");
+        alert("Registration failed.");
         return;
 
     }
 
     document.body.innerHTML = `
-    <div style="
-        min-height:100vh;
-        display:flex;
-        justify-content:center;
-        align-items:center;
-        flex-direction:column;
-        background:#f4f7f6;
-        font-family:Arial,sans-serif;
-    ">
+    <div style="min-height:100vh;display:flex;justify-content:center;align-items:center;flex-direction:column;background:#f4f7f6;font-family:Arial">
 
-        <div style="
-            width:70px;
-            height:70px;
-            border:8px solid #ddd;
-            border-top:8px solid #006400;
-            border-radius:50%;
-            animation:spin 1s linear infinite;
-        "></div>
+        <div style="width:70px;height:70px;border:8px solid #ddd;border-top:8px solid green;border-radius:50%;animation:spin 1s linear infinite"></div>
 
-        <h2 style="margin-top:20px;color:#006400;">
-            Processing Your Application...
-        </h2>
+        <h2 style="margin-top:20px;color:green;">Processing Your Application...</h2>
 
         <p>Please wait...</p>
 
@@ -95,111 +70,47 @@ form.addEventListener("submit", async function (e) {
 
     <style>
     @keyframes spin{
-        0%{transform:rotate(0deg);}
-        100%{transform:rotate(360deg);}
+    from{transform:rotate(0deg);}
+    to{transform:rotate(360deg);}
     }
     </style>
     `;
-      setTimeout(function () {
+
+    setTimeout(() => {
 
         document.body.innerHTML = `
-<div style="
-min-height:100vh;
-display:flex;
-justify-content:center;
-align-items:center;
-background:#f4f7f6;
-padding:20px;
-font-family:Arial,sans-serif;
-">
+        <div style="min-height:100vh;display:flex;justify-content:center;align-items:center;background:#f4f7f6;padding:20px;font-family:Arial">
 
-<div style="
-background:#fff;
-max-width:420px;
-width:100%;
-padding:30px;
-border-radius:20px;
-text-align:center;
-box-shadow:0 10px 30px rgba(0,0,0,.15);
-">
+        <div style="background:white;padding:30px;border-radius:20px;max-width:420px;width:100%;text-align:center">
 
-<div style="
-width:90px;
-height:90px;
-margin:auto;
-border-radius:50%;
-background:#16a34a;
-color:#fff;
-font-size:50px;
-display:flex;
-justify-content:center;
-align-items:center;
-">
-✓
-</div>
+        <div style="font-size:60px;color:green;">✓</div>
 
-<h2 style="margin-top:20px;color:#0f172a;">
-Application Received
-</h2>
+        <h2>Application Received</h2>
 
-<p style="color:#555;">
-Thank you for registering with
-<b>Honourable Ismail Sabon Garu Membership Registration Portal.</b>
-Your application has been received successfully.
-</p>
+        <p>Your registration has been submitted successfully.</p>
 
-<div style="
-background:#e8f8ee;
-padding:18px;
-border-radius:12px;
-margin:20px 0;
-">
-<small>APPLICATION ID</small>
+        <h3 style="color:green">${applicationId}</h3>
 
-<h3 style="color:#006400;">
-${applicationId}
-</h3>
+        <button onclick="location.reload()">Back To Home</button>
 
-</div>
+        <button onclick="showComingSoon()">Print Your ID Card</button>
 
-<div style="display:flex;gap:10px;">
+        </div>
 
-<button
-onclick="location.reload()"
-style="
-flex:1;
-padding:14px;
-background:#006400;
-color:white;
-border:none;
-border-radius:10px;
-cursor:pointer;
-">
-Back To Home
-</button>
+        </div>
+        `;
 
-<button
-onclick="showComingSoon()"
-style="
-flex:1;
-padding:14px;
-background:#1d4ed8;
-color:white;
-border:none;
-border-radius:10px;
-cursor:pointer;
-">
-Print Your ID Card
-</button>
+    },5000);
 
-</div>
-
-</div>
-
-      </
+})
 window.showComingSoon = async function () {
 
     const applicationId = localStorage.getItem("applicationId");
+
+    if (!applicationId) {
+        alert("Application not found.");
+        return;
+    }
 
     const q = query(
         collection(db, "registrations"),
@@ -218,16 +129,16 @@ window.showComingSoon = async function () {
     if (data.status === "Pending") {
 
         document.body.innerHTML = `
-        <div style="min-height:100vh;display:flex;justify-content:center;align-items:center;background:#f4f7f6;padding:20px;font-family:Arial,sans-serif;">
-            <div style="background:#fff;max-width:420px;width:100%;padding:30px;border-radius:20px;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,.15);">
-                <h2 style="color:#f59e0b;">🪪 ID Card Pending</h2>
+        <div style="min-height:100vh;display:flex;justify-content:center;align-items:center;background:#f4f7f6;padding:20px;font-family:Arial;">
+            <div style="background:#fff;padding:30px;border-radius:20px;max-width:420px;width:100%;text-align:center;">
+                <h2 style="color:orange;">🟡 ID Card Pending</h2>
 
-                <p style="margin-top:20px;line-height:1.8;">
-                    Your ID Card is currently <b>Pending</b>.<br><br>
-                    Please wait until the Administrator approves your application.
+                <p>
+                Your ID Card has not been approved yet.<br><br>
+                Please wait for the Administrator to approve your application.
                 </p>
 
-                <button onclick="location.reload()" style="margin-top:20px;padding:14px 20px;background:#006400;color:#fff;border:none;border-radius:10px;cursor:pointer;">
+                <button onclick="location.reload()">
                     Back To Home
                 </button>
 
@@ -238,24 +149,33 @@ window.showComingSoon = async function () {
     } else {
 
         document.body.innerHTML = `
-        <div style="min-height:100vh;display:flex;justify-content:center;align-items:center;background:#f4f7f6;padding:20px;font-family:Arial,sans-serif;">
+        <div style="min-height:100vh;display:flex;justify-content:center;align-items:center;background:#f4f7f6;padding:20px;font-family:Arial;">
 
-            <div style="background:#fff;width:360px;padding:25px;border-radius:20px;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,.15);">
+            <div style="background:white;width:360px;padding:25px;border-radius:20px;text-align:center;">
 
-                <h2 style="color:#006400;">HONOURABLE ISMAIL SABON GARU</h2>
+                <h2>HONOURABLE ISMAIL SABON GARU</h2>
 
                 <h3>MEMBERSHIP ID CARD</h3>
 
+                <hr>
+
                 <p><b>Name:</b> ${data.firstName} ${data.lastName}</p>
+
                 <p><b>Phone:</b> ${data.phoneNumber}</p>
+
                 <p><b>Application ID:</b> ${data.applicationId}</p>
+
                 <p><b>Ward:</b> ${data.ward}</p>
+
                 <p><b>LGA:</b> ${data.lga}</p>
+
                 <p><b>State:</b> ${data.state}</p>
 
-                <p style="color:#16a34a;font-weight:bold;">🟢 APPROVED</p>
+                <p style="color:green;font-weight:bold;">
+                🟢 APPROVED
+                </p>
 
-                <button onclick="window.print()" style="margin-top:20px;padding:14px 20px;background:#006400;color:white;border:none;border-radius:10px;cursor:pointer;">
+                <button onclick="window.print()">
                     Print ID Card
                 </button>
 
@@ -263,7 +183,9 @@ window.showComingSoon = async function () {
 
         </div>
         `;
+
     }
+
 };
 
 window.adminWarning = function () {
