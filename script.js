@@ -20,8 +20,7 @@ const form = document.getElementById("registrationForm");
 
 form.addEventListener("submit", async function (e) {
     e.preventDefault();
-
-    const applicationId = "TTT-" + Math.floor(100000 + Math.random() * 900000);
+localStorage.setItem("applicationId", applicationId);
   const firstName = document.getElementById("firstName").value;
 const middleName = document.getElementById("middleName").value;
 const lastName = document.getElementById("lastName").value;
