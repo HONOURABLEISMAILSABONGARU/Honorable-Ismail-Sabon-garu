@@ -9,6 +9,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
 
 const firebaseConfig = {
+const firebaseConfig = {
   apiKey: "AIzaSyDvjnzN9K6fntjv8CaKK-6ENjjyYnMOWOE",
   authDomain: "honourable-ismail-sabon-garu.firebaseapp.com",
   projectId: "honourable-ismail-sabon-garu",
@@ -16,7 +17,6 @@ const firebaseConfig = {
   messagingSenderId: "433993330936",
   appId: "1:433993330936:web:1c289e2fdf819d4cb3cb0d"
 };
-
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
