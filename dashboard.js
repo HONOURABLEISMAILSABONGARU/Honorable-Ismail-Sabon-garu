@@ -1,9 +1,12 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
 
 import {
+  import {
   getFirestore,
   collection,
-  getDocs
+  getDocs,
+  doc,
+  updateDoc
 } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
 const firebaseConfig = {
   apiKey: "AIzaSyDvjnzN9K6fntjv8CaKK-6ENjjyYnMOWOE",
@@ -36,7 +39,19 @@ async function loadApplications() {
             <b>${data.firstName} ${data.lastName}</b><br>
             📞 ${data.phoneNumber}<br>
             🆔 ${data.applicationId}<br>
-            Status: ${data.status}
+       Status: <b>${data.status}</b><br><br>
+
+<button onclick="approveApplication('${doc.id}')" style="
+padding:10px 15px;
+background:#16a34a;
+color:white;
+border:none;
+border-radius:8px;
+cursor:pointer;
+margin-right:10px;
+">
+Approve
+</button>
         </div>
         `;
     });
@@ -44,3 +59,14 @@ async function loadApplications() {
 }
 
 loadApplications();
+window.approveApplication = async function(id) {
+
+    await updateDoc(doc(db, "registrations", id), {
+        status: "Approved"
+    });
+
+    alert("Application Approved Successfully.");
+
+    location.reload();
+
+      }
