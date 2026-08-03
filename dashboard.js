@@ -44,7 +44,8 @@ async function loadApplications() {
 ? `
 <p>🟡 <b style="color:orange;">Pending</b></p>
 
-<button onclick="approveApplication('${doc.id}')"
+<button 
+onclick="approveApplication('${documentItem.id}')"
 style="
 padding:10px 15px;
 background:#16a34a;
