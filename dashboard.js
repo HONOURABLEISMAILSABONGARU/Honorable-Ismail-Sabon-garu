@@ -40,22 +40,25 @@ async function loadApplications() {
             <b>${data.firstName} ${data.lastName}</b><br>
             📞 ${data.phoneNumber}<br>
             🆔 ${data.applicationId}<br>
-            ${data.status === "Pending" ? `
-🟡 <b style="color:#eab308;">Pending</b><br><br>
+            ${data.status === "Pending"
+? `
+<p>🟡 <b style="color:orange;">Pending</b></p>
 
-<button onclick="approveApplication('${documentItem.id}')"
+<button onclick="approveApplication('${doc.id}')"
 style="
 padding:10px 15px;
 background:#16a34a;
-color:#fff;
+color:white;
 border:none;
 border-radius:8px;
 cursor:pointer;">
 Approve
 </button>
-` : `
-🟢 <b style="color:#16a34a;">Approved</b>
-`}
+`
+: `
+<p>🟢 <b style="color:green;">Approved</b></p>
+`
+                }
         </div>
         `;
     });
@@ -70,8 +73,5 @@ window.approveApplication = async function(id){
         status:"Approved"
     });
 
-    alert("Application Approved Successfully");
-
-    loadApplications();
-
+    location.reload();
           }
