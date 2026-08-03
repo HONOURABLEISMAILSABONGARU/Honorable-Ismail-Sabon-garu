@@ -2,9 +2,11 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebas
 import {
   getFirestore,
   collection,
-  addDoc
+  addDoc,
+  getDocs,
+  query,
+  where
 } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
-
 const firebaseConfig = {
   apiKey: "YOUR_API_KEY",
   authDomain: "honourable-ismail-sabon-garu.firebaseapp.com",
