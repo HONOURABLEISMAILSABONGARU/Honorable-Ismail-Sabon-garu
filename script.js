@@ -23,7 +23,7 @@ const db = getFirestore(app);
 
 const form = document.getElementById("registrationForm");
 
-form.addEventListener("submit", async function(e){
+form.addEventListener("submit", async function (e) {
 
     e.preventDefault();
 
@@ -138,13 +138,14 @@ align-items:center;
 ✓
 </div>
 
-<h2 style="margin-top:20px;">
+<h2 style="margin-top:20px;color:#0f172a;">
 Application Received
 </h2>
 
-<p>
+<p style="color:#555;">
 Thank you for registering with
 <b>Honourable Ismail Sabon Garu Membership Registration Portal.</b>
+Your application has been received successfully.
 </p>
 
 <div style="
@@ -153,7 +154,6 @@ padding:18px;
 border-radius:12px;
 margin:20px 0;
 ">
-
 <small>APPLICATION ID</small>
 
 <h3 style="color:#006400;">
@@ -196,12 +196,7 @@ Print Your ID Card
 
 </div>
 
-</div>
-`;
-
-    },5000);
-
-});
+      </
 window.showComingSoon = async function () {
 
     const applicationId = localStorage.getItem("applicationId");
@@ -232,8 +227,7 @@ window.showComingSoon = async function () {
                     Please wait until the Administrator approves your application.
                 </p>
 
-                <button onclick="location.reload()"
-                style="margin-top:20px;padding:14px 20px;background:#006400;color:#fff;border:none;border-radius:10px;cursor:pointer;">
+                <button onclick="location.reload()" style="margin-top:20px;padding:14px 20px;background:#006400;color:#fff;border:none;border-radius:10px;cursor:pointer;">
                     Back To Home
                 </button>
 
@@ -253,35 +247,25 @@ window.showComingSoon = async function () {
                 <h3>MEMBERSHIP ID CARD</h3>
 
                 <p><b>Name:</b> ${data.firstName} ${data.lastName}</p>
-
                 <p><b>Phone:</b> ${data.phoneNumber}</p>
-
                 <p><b>Application ID:</b> ${data.applicationId}</p>
-
                 <p><b>Ward:</b> ${data.ward}</p>
-
                 <p><b>LGA:</b> ${data.lga}</p>
-
                 <p><b>State:</b> ${data.state}</p>
 
-                <p style="color:#16a34a;font-weight:bold;">
-                🟢 APPROVED
-                </p>
+                <p style="color:#16a34a;font-weight:bold;">🟢 APPROVED</p>
 
-                <button onclick="window.print()"
-                style="margin-top:20px;padding:14px 20px;background:#006400;color:white;border:none;border-radius:10px;cursor:pointer;">
-                Print ID Card
+                <button onclick="window.print()" style="margin-top:20px;padding:14px 20px;background:#006400;color:white;border:none;border-radius:10px;cursor:pointer;">
+                    Print ID Card
                 </button>
 
             </div>
 
         </div>
         `;
-
     }
-
-}
+};
 
 window.adminWarning = function () {
     window.location.href = "admin.html";
-}
+};
