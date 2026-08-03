@@ -35,7 +35,7 @@ form.addEventListener("submit", async function (e) {
     const middleName = document.getElementById("middleName").value;
     const lastName = document.getElementById("lastName").value;
     const address = document.getElementById("address").value;
-    const phoneNumber = document.getElementById("phoneNumber").value;
+    const phoneNumber = document.getElementById("phoneNumber*").value;
     const gender = document.getElementById("gender").value;
     const state = document.getElementById("state").value;
     const lga = document.getElementById("lga").value;
