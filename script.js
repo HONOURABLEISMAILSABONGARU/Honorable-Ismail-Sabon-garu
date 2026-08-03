@@ -1,10 +1,56 @@
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
+import {
+  getFirestore,
+  collection,
+  addDoc
+} from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "honourable-ismail-sabon-garu.firebaseapp.com",
+  projectId: "honourable-ismail-sabon-garu",
+  storageBucket: "honourable-ismail-sabon-garu.firebasestorage.app",
+  messagingSenderId: "433993330936",
+  appId: "1:433993330936:web:1c289e2fdf819d4cb3cb0d"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 const form = document.getElementById("registrationForm");
 
-form.addEventListener("submit", function (e) {
+form.addEventListener("submit", async function (e) {
     e.preventDefault();
 
     const applicationId = "TTT-" + Math.floor(100000 + Math.random() * 900000);
-
+  const firstName = document.getElementById("firstName").value;
+const middleName = document.getElementById("middleName").value;
+const lastName = document.getElementById("lastName").value;
+const address = document.getElementById("address").value;
+const phoneNumber = document.getElementById("phoneNumber").value;
+const gender = document.getElementById("gender").value;
+const state = document.getElementById("state").value;
+const lga = document.getElementById("lga").value;
+const ward = document.getElementById("ward").value;
+    try {
+    await addDoc(collection(db, "registrations"), {
+        applicationId: applicationId,
+        firstName: firstName,
+        middleName: middleName,
+        lastName: lastName,
+        address: address,
+        phoneNumber: phoneNumber,
+        gender: gender,
+        state: state,
+        lga: lga,
+        ward: ward,
+        status: "Pending",
+        createdAt: new Date()
+    });
+} catch (error) {
+    console.error(error);
+    alert("Registration could not be saved. Please try again.");
+    return;
+}
     document.body.innerHTML = `
     <div style="
         min-height:100vh;
