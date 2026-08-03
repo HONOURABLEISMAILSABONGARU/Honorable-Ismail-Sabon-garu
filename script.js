@@ -84,9 +84,11 @@ const ward = document.getElementById("ward").value;
     alert("Registration could not be saved. Please try again.");
     return;
       }  
-});
-    setTimeout(function(){
 
+    setTimeout(function(){
+   }, 2000);
+
+});
         document.body.innerHTML = `
         <div style="
             min-height:100vh;
