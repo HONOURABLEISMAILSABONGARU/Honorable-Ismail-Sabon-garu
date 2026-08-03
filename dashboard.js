@@ -40,12 +40,22 @@ async function loadApplications() {
             <b>${data.firstName} ${data.lastName}</b><br>
             📞 ${data.phoneNumber}<br>
             🆔 ${data.applicationId}<br>
-            Status: <b>${data.status}</b><br><br>
+            ${data.status === "Pending" ? `
+🟡 <b style="color:#eab308;">Pending</b><br><br>
 
-            <button onclick="approveApplication('${documentItem.id}')"
-            style="padding:10px 15px;background:#16a34a;color:#fff;border:none;border-radius:8px;cursor:pointer;">
-                Approve
-            </button>
+<button onclick="approveApplication('${documentItem.id}')"
+style="
+padding:10px 15px;
+background:#16a34a;
+color:#fff;
+border:none;
+border-radius:8px;
+cursor:pointer;">
+Approve
+</button>
+` : `
+🟢 <b style="color:#16a34a;">Approved</b>
+`}
         </div>
         `;
     });
