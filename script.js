@@ -23,7 +23,7 @@ const db = getFirestore(app);
 const form = document.getElementById("registrationForm");
 
 form.addEventListener("submit", async (e) => {
-
+alert("Submit button is working");
     e.preventDefault();
 
     const applicationId = "TTT-" + Date.now();
