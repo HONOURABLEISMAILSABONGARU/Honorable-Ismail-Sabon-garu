@@ -131,7 +131,7 @@ form.addEventListener("submit", function (e) {
 
 });
 
-function showComingSoon() {
+window.showComingSoon = function () {
 
 document.body.innerHTML = `
 <div style="
@@ -153,13 +153,15 @@ border-radius:20px;
 text-align:center;
 box-shadow:0 10px 30px rgba(0,0,0,.15);
 ">
+<h2 style="color:#f59e0b;">
+🪪 ID Card Pending
+</h2>
 
-<h2 style="color:#1d4ed8;">Coming Soon</h2>
+<p style="margin:20px 0;color:#555;line-height:1.8;">
+Your ID Card is currently <b>Pending</b>.<br><br>
 
-<p style="margin:20px 0;color:#555;">
-Your ID Card has not yet been approved by the Administrator.
+Please wait until the Administrator approves your ID Card.
 </p>
-
 <button onclick="location.reload()" style="
 padding:14px 20px;
 background:#006400;
@@ -176,6 +178,6 @@ Back To Home
 `;
 }
 
-function adminWarning() {
+window.adminWarning = function () {
     window.location.href = "admin.html";
-        }
+}
