@@ -29,6 +29,7 @@ const gender = document.getElementById("gender").value;
 const state = document.getElementById("state").value;
 const lga = document.getElementById("lga").value;
 const ward = document.getElementById("ward").value;
+  const applicationId = "TTT-" + Math.floor(100000 + Math.random() * 900000);
     // Processing Screen
     document.body.innerHTML = `
     <div style="
