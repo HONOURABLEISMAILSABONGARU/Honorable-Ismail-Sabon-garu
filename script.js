@@ -182,3 +182,91 @@ window.showComingSoon = async function () {
 window.adminWarning = function () {
     window.location.href = "admin.html";
 };
+window.openIdSearch = function () {
+
+document.body.insertAdjacentHTML("beforeend", `
+<div id="idSearchPopup" style="
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,.6);
+display:flex;
+justify-content:center;
+align-items:center;
+z-index:9999;
+">
+
+<div style="
+background:#fff;
+width:90%;
+max-width:380px;
+padding:25px;
+border-radius:15px;
+text-align:center;
+">
+
+<h2 style="color:#006400;">
+🪪 Print Your ID Card
+</h2>
+
+<p>
+Enter the last 4 digits of your Application ID
+</p>
+
+<input
+id="lastFourDigits"
+type="text"
+maxlength="4"
+placeholder="Example: 4030"
+style="
+width:100%;
+padding:12px;
+margin:15px 0;
+border:2px solid #ddd;
+border-radius:8px;
+text-align:center;
+font-size:18px;
+">
+
+<div style="display:flex;gap:10px;">
+
+<button onclick="closePopup()"
+style="
+flex:1;
+padding:12px;
+background:#dc2626;
+color:#fff;
+border:none;
+border-radius:8px;
+cursor:pointer;
+">
+Cancel
+</button>
+
+<button onclick="searchApplication()"
+style="
+flex:1;
+padding:12px;
+background:#006400;
+color:#fff;
+border:none;
+border-radius:8px;
+cursor:pointer;
+">
+Check
+</button>
+
+</div>
+
+</div>
+
+</div>
+`);
+};
+
+window.closePopup = function () {
+const popup = document.getElementById("idSearchPopup");
+if (popup) popup.remove();
+};
