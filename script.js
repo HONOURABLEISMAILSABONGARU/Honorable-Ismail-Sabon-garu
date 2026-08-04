@@ -7,8 +7,6 @@ import {
   query,
   where
 } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
-
-const firebaseConfig = {
 const firebaseConfig = {
   apiKey: "AIzaSyDvjnzN9K6fntjv8CaKK-6ENjjyYnMOWOE",
   authDomain: "honourable-ismail-sabon-garu.firebaseapp.com",
@@ -21,11 +19,8 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 const form = document.getElementById("registrationForm");
-
 form.addEventListener("submit", async (e) => {
-alert("Submit button is working");
-    e.preventDefault();
-
+e.preventDefault();
     const applicationId = "TTT-" + Date.now();
 
     localStorage.setItem("applicationId", applicationId);
@@ -99,10 +94,9 @@ alert("Submit button is working");
 
         </div>
         `;
+}, 5000);
 
-    },5000);
-
-})
+});
 window.showComingSoon = async function () {
 
     const applicationId = localStorage.getItem("applicationId");
