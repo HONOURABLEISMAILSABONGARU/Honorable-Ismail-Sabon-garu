@@ -49,7 +49,7 @@ return;
 }
 
 try {
-
+alert("Script is working");
 const fileName = applicationId + "_" + passportFile.name;
 
 const extension = passportFile.name.split(".").pop();
