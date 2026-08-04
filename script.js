@@ -247,25 +247,81 @@ Cancel
 
 <button onclick="searchApplication()"
 style="
-flex:1;
+window.openIdSearch = function () {
+
+document.body.insertAdjacentHTML("beforeend", `
+<div id="idSearchModal" style="
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,.6);
+display:flex;
+justify-content:center;
+align-items:center;
+z-index:9999;
+">
+
+<div style="
+background:#fff;
+padding:25px;
+border-radius:15px;
+width:90%;
+max-width:350px;
+text-align:center;
+">
+
+<h2 style="color:#006400;">
+🪪 Print Your ID Card
+</h2>
+
+<p>Enter the last 4 digits of your Application ID</p>
+
+<input
+id="searchId"
+type="text"
+maxlength="4"
+placeholder="e.g. 4030"
+style="
+width:100%;
+padding:12px;
+font-size:18px;
+text-align:center;
+margin:15px 0;
+">
+
+<button onclick="searchIdCard()" style="
+width:100%;
 padding:12px;
 background:#006400;
 color:#fff;
 border:none;
 border-radius:8px;
-cursor:pointer;
+font-size:16px;
+font-weight:bold;
 ">
-Check
+Search
+</button>
+
+<br><br>
+
+<button onclick="document.getElementById('idSearchModal').remove()" style="
+background:#dc2626;
+color:white;
+padding:10px 18px;
+border:none;
+border-radius:8px;
+">
+Close
 </button>
 
 </div>
 
 </div>
-
-</div>
 `);
-};
 
+};
 window.closePopup = function () {
 const popup = document.getElementById("idSearchPopup");
 if (popup) popup.remove();
@@ -292,10 +348,7 @@ data.applicationId.endsWith(lastFour)){
 
 found = data;
 
-}
-
-});
-
+ 
 if(!found){
 alert("Application ID not found.");
 return;
