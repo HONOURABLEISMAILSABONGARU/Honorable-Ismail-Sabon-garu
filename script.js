@@ -50,7 +50,9 @@ return;
 
 try {
 
-const storageRef = ref(storage, "passports/" + applicationId);
+const fileName = applicationId + "_" + passportFile.name;
+
+const storageRef = ref(storage, "passports/" + fileName);
 
 await uploadBytes(storageRef, passportFile);
 
@@ -78,7 +80,6 @@ createdAt: new Date()
 };
 
 await addDoc(collection(db, "registrations"), registration);
-
 document.body.innerHTML = `
 <div style="min-height:100vh;display:flex;justify-content:center;align-items:center;background:#f4f7f6;font-family:Arial;padding:20px;">
 
@@ -94,7 +95,14 @@ document.body.innerHTML = `
 
 <h3 style="color:#006400;">${applicationId}</h3>
 
-<button onclick="location.reload()" style="padding:12px 20px;background:#006400;color:#fff;border:none;border-radius:8px;cursor:pointer;">
+<button onclick="location.reload()" style="
+padding:12px 20px;
+background:#006400;
+color:#fff;
+border:none;
+border-radius:8px;
+cursor:pointer;
+">
 Back To Home
 </button>
 
@@ -103,7 +111,7 @@ Back To Home
 </div>
 `;
 
-} catch(err) {
+} catch (err) {
 
 console.error(err);
 
@@ -114,7 +122,6 @@ alert("Registration failed. Please try again.");
 });
 
 }
-
 window.adminWarning = function () {
     window.location.href = "admin.html";
 };
@@ -140,42 +147,75 @@ background:#fff;
 padding:25px;
 border-radius:15px;
 width:90%;
-max-width:350px;
+max-width:360px;
 text-align:center;
 ">
 
-<h2 style="color:#006400;">🪪 Print Your ID Card</h2>
+<h2 style="color:#006400;">
+🪪 Print Your ID Card
+</h2>
 
-<p>Enter the last 4 digits of your Application ID</p>
+<p>
+Enter the last 4 digits of your Application ID
+</p>
 
 <input
 id="searchId"
 type="text"
 maxlength="4"
 placeholder="e.g. 4030"
-style="width:100%;padding:12px;margin:15px 0;font-size:18px;text-align:center;">
+style="
+width:100%;
+padding:12px;
+margin:15px 0;
+font-size:18px;
+text-align:center;
+border:2px solid #ddd;
+border-radius:8px;
+">
 
-<button onclick="searchIdCard()" style="width:100%;padding:12px;background:#006400;color:white;border:none;border-radius:8px;cursor:pointer;">
+<button
+onclick="searchIdCard()"
+style="
+width:100%;
+padding:12px;
+background:#006400;
+color:#fff;
+border:none;
+border-radius:8px;
+cursor:pointer;
+font-size:16px;
+">
 Search
 </button>
 
 <br><br>
 
-<button onclick="document.getElementById('idSearchModal').remove()" style="padding:10px 20px;background:#dc2626;color:white;border:none;border-radius:8px;cursor:pointer;">
+<button
+onclick="document.getElementById('idSearchModal').remove()"
+style="
+padding:10px 20px;
+background:#dc2626;
+color:white;
+border:none;
+border-radius:8px;
+cursor:pointer;
+">
 Close
 </button>
 
 </div>
+
 </div>
 `);
 };
 
-window.searchIdCard = async function () {
+window.searchIdCard = async function(){
 
 const last4 = document.getElementById("searchId").value.trim();
 
 if(last4.length !== 4){
-alert("Enter the last 4 digits.");
+alert("Please enter the last 4 digits.");
 return;
 }
 
@@ -188,66 +228,144 @@ const data = doc.data();
 
 if(data.applicationId &&
 data.applicationId.slice(-4) === last4){
+
 found = data;
+
 }
 
 });
-
 if(!found){
+
 alert("Application ID not found.");
+
 return;
+
 }
 
 document.getElementById("idSearchModal").remove();
 
 if(found.status !== "Approved"){
 
-document.body.innerHTML=`
-<div style="min-height:100vh;display:flex;justify-content:center;align-items:center;background:#f4f7f6;font-family:Arial;">
-<div style="background:white;padding:30px;border-radius:20px;text-align:center;max-width:400px;">
-<h2 style="color:orange;">🟡 ID Card Pending</h2>
-<p>Your ID Card has not been approved yet.</p>
-<button onclick="location.reload()">Back To Home</button>
+document.body.innerHTML = `
+<div style="
+min-height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+background:#f4f7f6;
+font-family:Arial;
+">
+
+<div style="
+background:#fff;
+padding:30px;
+border-radius:20px;
+max-width:400px;
+width:90%;
+text-align:center;
+">
+
+<h2 style="color:orange;">
+🟡 ID Card Pending
+</h2>
+
+<p>
+Your ID Card has not been approved yet.
+</p>
+
+<button onclick="location.reload()"
+style="
+padding:12px 20px;
+background:#006400;
+color:white;
+border:none;
+border-radius:8px;
+">
+Back To Home
+</button>
+
 </div>
+
 </div>
 `;
+
 return;
 
 }
 
 showIdCard(found);
-
 };
-
 window.showIdCard = function(found){
 
-document.body.innerHTML=`
-<div style="min-height:100vh;display:flex;justify-content:center;align-items:center;background:#eef2f3;padding:20px;font-family:Arial;">
+document.body.innerHTML = `
+<div style="
+min-height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+background:#eef2f3;
+padding:20px;
+font-family:Arial;
+">
 
-<div style="width:340px;background:white;border-radius:18px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,.25);">
+<div style="
+width:360px;
+background:#fff;
+border-radius:18px;
+overflow:hidden;
+box-shadow:0 10px 30px rgba(0,0,0,.25);
+border:2px solid #006400;
+">
 
-<div style="background:linear-gradient(135deg,#006400,#0b8f4d);padding:20px;text-align:center;color:white;">
+<div style="
+background:linear-gradient(135deg,#006400,#0b8f4d);
+padding:18px;
+text-align:center;
+color:white;
+">
 
 <img src="20260802_132740.png"
-style="width:70px;height:70px;border-radius:50%;background:white;padding:5px;">
+style="
+width:70px;
+height:70px;
+border-radius:50%;
+background:white;
+padding:5px;
+">
 
-<h2>HONOURABLE ISMAIL SABON GARU</h2>
-<p>MEMBERSHIP ID CARD</p>
+<h2 style="margin:10px 0 5px;">
+HONOURABLE ISMAIL SABON GARU
+</h2>
+
+<p style="margin:0;font-size:14px;">
+MEMBERSHIP ID CARD
+</p>
 
 </div>
 
-<div style="padding:20px;text-align:center;">
+<div style="
+padding:20px;
+text-align:center;
+">
 
 <img src="${found.passport}"
-style="width:110px;height:110px;border-radius:10px;border:3px solid #006400;object-fit:cover;">
+style="
+width:110px;
+height:110px;
+border-radius:10px;
+border:3px solid #006400;
+object-fit:cover;
+background:#eee;
+">
 
-<h3>${found.firstName} ${found.lastName}</h3>
+<h3 style="margin-top:12px;">
+${found.firstName} ${found.lastName}
+</h3>
 
 <hr>
-
 <p><b>Application ID</b><br>${found.applicationId}</p>
 
-<p><b>Phone</b><br>${found.phoneNumber}</p>
+<p><b>Phone Number</b><br>${found.phoneNumber}</p>
 
 <p><b>Ward</b><br>${found.ward}</p>
 
@@ -255,11 +373,33 @@ style="width:110px;height:110px;border-radius:10px;border:3px solid #006400;obje
 
 <p><b>State</b><br>${found.state}</p>
 
-<p style="color:green;font-weight:bold;font-size:18px;">
+<div style="
+margin-top:15px;
+padding:10px;
+background:#d1fae5;
+border:2px solid #16a34a;
+border-radius:8px;
+font-size:18px;
+font-weight:bold;
+color:#15803d;
+">
 ✅ APPROVED
-</p>
+</div>
 
-<button onclick="window.print()" style="width:100%;padding:12px;background:#006400;color:white;border:none;border-radius:8px;font-size:16px;">
+<button
+onclick="window.print()"
+style="
+width:100%;
+margin-top:20px;
+padding:12px;
+background:#006400;
+color:white;
+border:none;
+border-radius:8px;
+font-size:16px;
+font-weight:bold;
+cursor:pointer;
+">
 Download / Print ID Card
 </button>
 
