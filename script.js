@@ -71,6 +71,9 @@ createdAt: new Date()
 
 };
  try {
+
+await addDoc(collection(db, "registrations"), registration);
+
 document.body.innerHTML = `
 <div style="min-height:100vh;display:flex;justify-content:center;align-items:center;flex-direction:column;background:#f4f7f6;font-family:Arial;">
 
@@ -117,3 +120,18 @@ Back To Home
 `;
 
 }, 5000);
+} catch (err) {
+
+console.error(err);
+
+alert(err.message);
+
+}
+
+};
+
+reader.readAsDataURL(passport);
+
+});
+
+}
