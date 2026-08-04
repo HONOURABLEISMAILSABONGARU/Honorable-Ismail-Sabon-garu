@@ -115,3 +115,11 @@ Back To Home
 
 </div>
 `;
+    } catch (err) {
+        console.error(err);
+        alert(err.message);
+    }
+
+  });
+
+  }
