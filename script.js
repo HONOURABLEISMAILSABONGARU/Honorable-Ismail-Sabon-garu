@@ -25,101 +25,76 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const storage = getStorage(app);
+
 const form = document.getElementById("registrationForm");
 
 if (form) {
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
 
-    try {
-      const applicationId = "TTT-" + Date.now();
+form.addEventListener("submit", async (e) => {
 
-      const passportFile = document.getElementById("passport").files[0];
+e.preventDefault();
 
-      if (!passportFile) {
-        alert("Please upload your passport.");
-        return;
-      }
+const passportFile = document.getElementById("passport").files[0];
 
-      const extension = passportFile.name.split(".").pop();
+if (!passportFile) {
+alert("Please upload your passport photo.");
+return;
+}
 
-      const storageRef = ref(
-        storage,
-        `passports/${applicationId}.${extension}`
-      );
+const applicationId = "TTT-" + Date.now();
 
-      await uploadBytes(storageRef, passportFile);
+try {
 
-      const passportURL = await getDownloadURL(storageRef);
+const extension = passportFile.name.split(".").pop();
 
-      const registration = {
-        applicationId,
-        passport: passportURL,
-        firstName: document.getElementById("firstName").value,
-        middleName: document.getElementById("middleName").value,
-        lastName: document.getElementById("lastName").value,
-        address: document.getElementById("address").value,
-        phoneNumber: document.getElementById("phoneNumber").value,
-        gender: document.getElementById("gender").value,
-        state: document.getElementById("state").value,
-        lga: document.getElementById("lga").value,
-        ward: document.getElementById("ward").value,
-        status: "Pending",
-        createdAt: new Date()
-      };
+const storageRef = ref(
+storage,
+`passports/${applicationId}.${extension}`
+);
 
-      await addDoc(collection(db, "registrations"), registration);
-      document.body.innerHTML = `
-<div style="
-min-height:100vh;
-display:flex;
-justify-content:center;
-align-items:center;
-background:#f4f7f6;
-font-family:Arial;
-padding:20px;
-">
+await uploadBytes(storageRef, passportFile);
 
-<div style="
-background:#fff;
-padding:30px;
-border-radius:20px;
-max-width:420px;
-width:100%;
-text-align:center;
-box-shadow:0 10px 30px rgba(0,0,0,.15);
-">
+const passportURL = await getDownloadURL(storageRef);
+const registration = {
+  applicationId: applicationId,
+  passport: passportURL,
+  firstName: document.getElementById("firstName").value,
+  middleName: document.getElementById("middleName").value,
+  lastName: document.getElementById("lastName").value,
+  address: document.getElementById("address").value,
+  phoneNumber: document.getElementById("phoneNumber").value,
+  gender: document.getElementById("gender").value,
+  state: document.getElementById("state").value,
+  lga: document.getElementById("lga").value,
+  ward: document.getElementById("ward").value,
+  status: "Pending",
+  createdAt: new Date()
+};
 
+await addDoc(collection(db, "registrations"), registration);
+
+document.body.innerHTML = `
+<div style="min-height:100vh;display:flex;justify-content:center;align-items:center;background:#f4f7f6;font-family:Arial;padding:20px;">
+<div style="background:#fff;padding:30px;border-radius:20px;max-width:420px;width:100%;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,.15);">
 <div style="font-size:60px;color:green;">✓</div>
-
 <h2>Application Received</h2>
-
 <p>Your registration has been submitted successfully.</p>
-
 <p><b>Application ID</b></p>
-
 <h3 style="color:#006400;">${applicationId}</h3>
-
-<button onclick="location.reload()" style="
-padding:12px 20px;
-background:#006400;
-color:#fff;
-border:none;
-border-radius:8px;
-cursor:pointer;
-">
+<button onclick="location.reload()" style="padding:12px 20px;background:#006400;color:#fff;border:none;border-radius:8px;cursor:pointer;">
 Back To Home
 </button>
-
 </div>
-
 </div>
-`;
-    } catch (err) {
-        console.error(err);
-        alert(err.message);
-    }
+`; 
+} catch (err) {
 
-  });
+console.error(err);
 
-  }
+alert(err.message);
+
+}
+
+});
+
+}
