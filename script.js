@@ -87,9 +87,6 @@ e.preventDefault();
         <h3 style="color:green">${applicationId}</h3>
 
         <button onclick="location.reload()">Back To Home</button>
-
-        <button onclick="showComingSoon()">Print Your ID Card</button>
-
         </div>
 
         </div>
