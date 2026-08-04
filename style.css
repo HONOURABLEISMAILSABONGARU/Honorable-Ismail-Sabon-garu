@@ -202,18 +202,21 @@ input[type="file"]{
    }
 .print-id-btn{
 position:fixed;
-top:20px;
-right:20px;
+top:15px;
+right:15px;
 background:#dc2626;
 color:#fff;
-padding:10px 15px;
+padding:8px 12px;
 border-radius:8px;
-font-weight:bold;
+font-size:14px;
+font-weight:600;
 cursor:pointer;
 z-index:999;
-box-shadow:0 4px 10px rgba(0,0,0,.2);
+box-shadow:0 3px 10px rgba(0,0,0,.25);
+transition:.3s;
 }
 
 .print-id-btn:hover{
 background:#b91c1c;
-}
+transform:scale(1.05);
+   }
