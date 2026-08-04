@@ -396,8 +396,110 @@ Back To Home
 
 }else{
 
-alert("Approved! In the next step we will show and download the ID Card.");
-
+showIdCard(found);
 }
+
+};
+window.showIdCard = function(found){
+
+document.body.innerHTML = `
+<div style="
+min-height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+background:#f3f6f8;
+padding:20px;
+font-family:Arial;
+">
+
+<div style="
+width:340px;
+background:white;
+border-radius:18px;
+overflow:hidden;
+box-shadow:0 10px 30px rgba(0,0,0,.25);
+">
+
+<div style="
+background:linear-gradient(135deg,#006400,#0b8f4d);
+padding:20px;
+text-align:center;
+color:white;
+">
+
+<img src="20260802_132740.png"
+style="
+width:70px;
+height:70px;
+border-radius:50%;
+background:white;
+padding:5px;
+">
+
+<h2 style="margin:10px 0 5px;">
+HONOURABLE ISMAIL SABON GARU
+</h2>
+
+<p style="margin:0;">
+MEMBERSHIP ID CARD
+</p>
+
+</div>
+
+<div style="padding:20px;text-align:center;">
+
+<img src="https://via.placeholder.com/110"
+style="
+width:110px;
+height:110px;
+border-radius:10px;
+border:3px solid #006400;
+object-fit:cover;
+">
+
+<h3>${found.firstName} ${found.lastName}</h3>
+
+<hr>
+
+<p><b>Application ID:</b><br>${found.applicationId}</p>
+
+<p><b>Phone:</b><br>${found.phoneNumber}</p>
+
+<p><b>Ward:</b><br>${found.ward}</p>
+
+<p><b>LGA:</b><br>${found.lga}</p>
+
+<p><b>State:</b><br>${found.state}</p>
+
+<p style="
+color:green;
+font-weight:bold;
+font-size:18px;
+">
+✅ APPROVED
+</p>
+
+<button
+onclick="window.print()"
+style="
+width:100%;
+padding:12px;
+background:#006400;
+color:white;
+border:none;
+border-radius:8px;
+font-size:16px;
+margin-top:10px;
+">
+Download / Print ID Card
+</button>
+
+</div>
+
+</div>
+
+</div>
+`;
 
 };
