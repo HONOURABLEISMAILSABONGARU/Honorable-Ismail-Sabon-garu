@@ -42,11 +42,8 @@ return;
 
 try {
 alert("Script is working");
-const fileName = applicationId + "_" + passportFile.name;
-
-const extension = passportFile.name.split(".").pop();
-
-const storageRef = ref(
+const passportURL = "";
+  
   storage,
   `passports/${applicationId}.${extension}`
 );
@@ -147,7 +144,7 @@ text-align:center;
 ">
 
 <h2 style="color:#006400;">
-🪪 Print Your ID Card
+ Print Your ID Card
 </h2>
 
 <p>
