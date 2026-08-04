@@ -41,9 +41,10 @@ return;
 }
 
 try {
-alert("Script is working");
-const passportURL = "";
-  
+
+const extension = passportFile.name.split(".").pop();
+
+const storageRef = ref(
   storage,
   `passports/${applicationId}.${extension}`
 );
@@ -51,7 +52,6 @@ const passportURL = "";
 await uploadBytes(storageRef, passportFile);
 
 const passportURL = await getDownloadURL(storageRef);
-
 const registration = {
 
 applicationId,
