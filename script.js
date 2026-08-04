@@ -348,7 +348,7 @@ padding:20px;
 text-align:center;
 ">
 
-<img src="${found.passport}"
+<img src="${found.passport || 'https://via.placeholder.com/110x110?text=PHOTO'}"
 style="
 width:110px;
 height:110px;
