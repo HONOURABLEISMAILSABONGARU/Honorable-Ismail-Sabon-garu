@@ -270,3 +270,81 @@ window.closePopup = function () {
 const popup = document.getElementById("idSearchPopup");
 if (popup) popup.remove();
 };
+window.searchApplication = async function () {
+
+const lastFour = document.getElementById("lastFourDigits").value.trim();
+
+if(lastFour.length !== 4){
+alert("Please enter the last 4 digits.");
+return;
+}
+
+const snapshot = await getDocs(collection(db,"registrations"));
+
+let found = null;
+
+snapshot.forEach((docItem)=>{
+
+const data = docItem.data();
+
+if(data.applicationId &&
+data.applicationId.endsWith(lastFour)){
+
+found = data;
+
+}
+
+});
+
+if(!found){
+alert("Application ID not found.");
+return;
+}
+
+closePopup();
+
+if(found.status==="Pending"){
+
+document.body.innerHTML=`
+<div style="
+min-height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+background:#f4f7f6;
+font-family:Arial;
+">
+
+<div style="
+background:#fff;
+padding:30px;
+border-radius:20px;
+text-align:center;
+max-width:400px;
+width:90%;
+">
+
+<h2 style="color:orange;">
+🪪 ID Card Pending
+</h2>
+
+<p>
+Your application is still pending approval.
+</p>
+
+<button onclick="location.reload()">
+Back To Home
+</button>
+
+</div>
+
+</div>
+`;
+
+}else{
+
+alert("Approved! In the next step we will show and download the ID Card.");
+
+}
+
+};
