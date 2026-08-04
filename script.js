@@ -71,8 +71,26 @@ createdAt: new Date()
 
 };
  try {
+document.body.innerHTML = `
+<div style="min-height:100vh;display:flex;justify-content:center;align-items:center;flex-direction:column;background:#f4f7f6;font-family:Arial;">
 
-await addDoc(collection(db, "registrations"), registration);
+<div style="width:70px;height:70px;border:8px solid #ddd;border-top:8px solid #006400;border-radius:50%;animation:spin 1s linear infinite;"></div>
+
+<h2 style="margin-top:20px;color:#006400;">Processing Your Application...</h2>
+
+<p>Please wait...</p>
+
+</div>
+
+<style>
+@keyframes spin{
+from{transform:rotate(0deg);}
+to{transform:rotate(360deg);}
+}
+</style>
+`;
+
+setTimeout(() => {
 
 document.body.innerHTML = `
 <div style="min-height:100vh;display:flex;justify-content:center;align-items:center;background:#f4f7f6;padding:20px;font-family:Arial;">
@@ -89,15 +107,7 @@ document.body.innerHTML = `
 
 <h3 style="color:#006400;">${applicationId}</h3>
 
-<button onclick="location.reload()" style="
-padding:12px 20px;
-background:#006400;
-color:#fff;
-border:none;
-border-radius:8px;
-cursor:pointer;
-border-radius:8px;
-">
+<button onclick="location.reload()" style="padding:12px 20px;background:#006400;color:#fff;border:none;border-radius:8px;cursor:pointer;">
 Back To Home
 </button>
 
@@ -106,18 +116,4 @@ Back To Home
 </div>
 `;
 
-} catch (err) {
-
-console.error(err);
-
-alert(err.message);
-
-}
-
-};
-
-reader.readAsDataURL(passport);
-
-});
-
-  } 
+}, 5000);
