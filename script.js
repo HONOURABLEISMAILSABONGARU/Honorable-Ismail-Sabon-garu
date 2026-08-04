@@ -7,6 +7,13 @@ import {
   query,
   where
 } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
+
+import {
+  getStorage,
+  ref,
+  uploadBytes,
+  getDownloadURL
+} from "https://www.gstatic.com/firebasejs/12.2.1/firebase-storage.js";
 const firebaseConfig = {
   apiKey: "AIzaSyDvjnzN9K6fntjv8CaKK-6ENjjyYnMOWOE",
   authDomain: "honourable-ismail-sabon-garu.firebaseapp.com",
@@ -17,16 +24,27 @@ const firebaseConfig = {
 };
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-
+const storage = getStorage(app);
 const form = document.getElementById("registrationForm");
 form.addEventListener("submit", async (e) => {
 e.preventDefault();
     const applicationId = "TTT-" + Date.now();
 
     localStorage.setItem("applicationId", applicationId);
+const passportFile = document.getElementById("passport").files[0];
 
+if (!passportFile) {
+    alert("Please upload your passport photo.");
+    return;
+}
+
+const storageRef = ref(storage, "passports/" + applicationId + ".jpg");
+
+await uploadBytes(storageRef, passportFile);
+
+const passportURL = await getDownloadURL(storageRef);
     const registration = {
-        applicationId: applicationId,
+        applicationId: applicationId,passport: passportURL,
         firstName: document.getElementById("firstName").value,
         middleName: document.getElementById("middleName").value,
         lastName: document.getElementById("lastName").value,
