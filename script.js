@@ -52,7 +52,12 @@ try {
 
 const fileName = applicationId + "_" + passportFile.name;
 
-const storageRef = ref(storage, "passports/" + fileName);
+const extension = passportFile.name.split(".").pop();
+
+const storageRef = ref(
+  storage,
+  `passports/${applicationId}.${extension}`
+);
 
 await uploadBytes(storageRef, passportFile);
 
