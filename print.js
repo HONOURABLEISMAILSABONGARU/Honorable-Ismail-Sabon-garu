@@ -36,11 +36,10 @@ let found = null;
 snapshot.forEach((document) => {
 
 const data = document.data();
-
-if (data.applicationId.endsWith(lastFour)) {
+if (data.applicationId && data.applicationId.includes(lastFour)) {
   found = data;
-}
-
+                           }
+  
 });
   if (!found) {
 
