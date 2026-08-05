@@ -192,14 +192,14 @@ reader.readAsDataURL(passport);
 });
 
 }
-function adminWarning() {
+window.adminWarning = function () {
 
 const ok = confirm(
 "Administrator Access Only!\n\nDo you want to continue to the Admin Login page?"
 );
 
-if(ok){
-window.location.href = "admin.html";
+if (ok) {
+    window.location.href = "admin.html";
 }
 
 }
