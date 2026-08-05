@@ -64,7 +64,7 @@ font-family:Arial,sans-serif;
 ">
 
 <div style="
-width:380px;
+width:700px;
 background:#fff;
 border-radius:20px;
 overflow:hidden;
@@ -76,7 +76,7 @@ border:3px solid #006400;
 background:#006400;
 color:#fff;
 text-align:center;
-padding:20px;
+padding:30px;
 ">
 
 <img src="20260802_132740.png"
@@ -102,8 +102,8 @@ OFFICIAL MEMBERSHIP CARD
 
 <img src="${found.passport}"
 style="
-width:130px;
-height:130px;
+width:180px;
+height:180px;
 border-radius:10px;
 object-fit:cover;
 border:4px solid #006400;
