@@ -72,9 +72,9 @@ createdAt: new Date()
 };
  try {
 
-await addDoc(collection(db, "registrations"), registration);
+document.body.innerHTML = `Processing...`;
 
-document.body.innerHTML = `
+await addDoc(collection(db, "registrations"), registration);
 <div style="min-height:100vh;display:flex;justify-content:center;align-items:center;flex-direction:column;background:#f4f7f6;font-family:Arial;">
 
 <div style="width:70px;height:70px;border:8px solid #ddd;border-top:8px solid #006400;border-radius:50%;animation:spin 1s linear infinite;"></div>
