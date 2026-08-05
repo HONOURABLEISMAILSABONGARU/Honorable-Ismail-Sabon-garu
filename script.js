@@ -163,7 +163,7 @@ Back To Home
 </div>
 `;
 
-}, 5000);
+}, 2000);
 
 } catch (err) {
 
