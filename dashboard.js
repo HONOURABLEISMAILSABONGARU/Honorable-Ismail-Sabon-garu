@@ -5,9 +5,9 @@ import {
   collection,
   getDocs,
   doc,
-  updateDoc
+  updateDoc,
+  deleteDoc
 } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
-
 const firebaseConfig = {
   apiKey: "AIzaSyDvjnzN9K6fntjv8CaKK-6ENjjyYnMOWOE",
   authDomain: "honourable-ismail-sabon-garu.firebaseapp.com",
@@ -40,31 +40,32 @@ async function loadApplications() {
             <b>${data.firstName} ${data.lastName}</b><br>
             📞 ${data.phoneNumber}<br>
             🆔 ${data.applicationId}<br>
-            ${data.status === "Pending"
+${data.status === "Pending"
 ? `
 <p>🟡 <b style="color:orange;">Pending</b></p>
 
-<button 
+<button
 onclick="approveApplication('${documentItem.id}')"
-style="
-padding:10px 15px;
-background:#16a34a;
-color:white;
-border:none;
-border-radius:8px;
-cursor:pointer;">
+style="padding:10px 15px;background:#16a34a;color:white;border:none;border-radius:8px;cursor:pointer;margin-right:8px;">
 Approve
+</button>
+
+<button
+onclick="deleteApplication('${documentItem.id}')"
+style="padding:10px 15px;background:#dc2626;color:white;border:none;border-radius:8px;cursor:pointer;">
+Delete
 </button>
 `
 : `
 <p>🟢 <b style="color:green;">Approved</b></p>
-`
-                }
-        </div>
-        `;
-    });
 
-}
+<button
+onclick="deleteApplication('${documentItem.id}')"
+style="padding:10px 15px;background:#dc2626;color:white;border:none;border-radius:8px;cursor:pointer;">
+Delete
+</button>
+`
+                               }
 
 loadApplications();
 
@@ -76,3 +77,16 @@ window.approveApplication = async function(id){
 
     location.reload();
           }
+window.deleteApplication = async function(id){
+
+const ok = confirm("Are you sure you want to delete this application?");
+
+if(!ok) return;
+
+await deleteDoc(doc(db,"registrations",id));
+
+alert("Application deleted successfully.");
+
+location.reload();
+
+                                               }
