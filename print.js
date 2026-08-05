@@ -1,5 +1,4 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
-
 import {
   getFirestore,
   collection,
@@ -20,128 +19,148 @@ const db = getFirestore(app);
 
 const searchBtn = document.getElementById("searchBtn");
 const searchId = document.getElementById("searchId");
+
 searchBtn.addEventListener("click", async () => {
 
 const lastFour = searchId.value.trim();
 
-if (lastFour.length !== 4) {
-  alert("Please enter the last 4 digits.");
-  return;
+if(lastFour.length !== 4){
+alert("Please enter the last 4 digits of your Application ID.");
+return;
 }
 
-const snapshot = await getDocs(collection(db, "registrations"));
+const snapshot = await getDocs(collection(db,"registrations"));
 
 let found = null;
 
-snapshot.forEach((document) => {
+snapshot.forEach((doc)=>{
 
-const data = document.data();
-if (data.applicationId && data.applicationId.includes(lastFour)) {
-  found = data;
-                           }
-  
-});
-if (!found) {
+const data = doc.data();
 
-  alert("Application ID not found.");
-
-  return;
-
+if(data.applicationId && data.applicationId.endsWith(lastFour)){
+found = data;
 }
 
-if (found.status !== "Approved") {
+});
 
-  alert("Your ID Card is not ready yet.\n\nPlease wait until the Admin approves your registration.");
+if(!found){
+alert("Application ID not found.");
+return;
+}
 
-  return;
-
-  }
-  
+if(found.status !== "Approved"){
+alert("Your ID Card is not ready yet.\n\nPlease wait until the Admin approves your registration.");
+return;
+}
 document.body.innerHTML = `
 <div style="
 min-height:100vh;
 display:flex;
 justify-content:center;
 align-items:center;
-background:#f4f7f6;
+background:#eaf4ea;
 padding:20px;
-font-family:Arial;
+font-family:Arial,sans-serif;
 ">
 
 <div style="
-width:350px;
+width:380px;
 background:#fff;
-border:3px solid #006400;
 border-radius:20px;
-padding:20px;
-text-align:center;
-box-shadow:0 10px 20px rgba(0,0,0,.15);
+overflow:hidden;
+box-shadow:0 10px 30px rgba(0,0,0,.18);
+border:3px solid #006400;
 ">
 
-<h2 style="color:#006400;">
+<div style="
+background:#006400;
+color:#fff;
+text-align:center;
+padding:20px;
+">
+
+<img src="20260802_132740.png"
+style="
+width:80px;
+height:80px;
+border-radius:50%;
+background:#fff;
+padding:5px;
+">
+
+<h2 style="margin:10px 0 5px;">
 HONOURABLE ISMAIL SABON GARU
 </h2>
 
-<h3>MEMBERSHIP CARD</h3>
-<img
-src="${found.passport}"
+<p style="color:#FFD700;">
+OFFICIAL MEMBERSHIP CARD
+</p>
+
+</div>
+
+<div style="padding:20px;text-align:center;">
+
+<img src="${found.passport}"
 style="
-width:120px;
-height:120px;
-object-fit:cover;
+width:130px;
+height:130px;
 border-radius:10px;
-border:2px solid #006400;
-margin-top:10px;
+object-fit:cover;
+border:4px solid #006400;
 ">
+
+<h2 style="color:#006400;">
+${found.firstName} ${found.middleName} ${found.lastName}
+</h2>
 
 <hr>
 
-<p><b>Name:</b></p>
-
-<p>
-${found.firstName} ${found.middleName} ${found.lastName}
-</p>
-
 <p><b>Application ID</b></p>
-
 <p>${found.applicationId}</p>
-<p><b>Phone Number</b></p>
 
+<p><b>Phone Number</b></p>
 <p>${found.phoneNumber}</p>
 
 <p><b>State</b></p>
-
 <p>${found.state}</p>
 
 <p><b>LGA</b></p>
-
 <p>${found.lga}</p>
 
 <p><b>Ward</b></p>
-
 <p>${found.ward}</p>
 
-<p><b>Status</b></p>
-
-<p style="font-weight:bold;color:${found.status === "Approved" ? "green" : "orange"};">
+<p>
+<span style="
+background:#0a8f3d;
+color:#fff;
+padding:6px 14px;
+border-radius:20px;
+font-weight:bold;
+">
 ${found.status}
+</span>
 </p>
 
 <button onclick="window.print()" style="
-padding:12px 20px;
+width:100%;
+padding:14px;
 background:#006400;
-color:#fff;
+color:white;
 border:none;
-border-radius:8px;
+border-radius:10px;
+font-size:17px;
 cursor:pointer;
 margin-top:15px;
 ">
-Print ID Card
+🖨 Print ID Card
 </button>
+
+</div>
 
 </div>
 
 </div>
 `;
 
-});
+});  
