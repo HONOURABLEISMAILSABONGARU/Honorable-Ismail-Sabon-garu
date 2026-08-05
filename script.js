@@ -5,11 +5,10 @@ import {
   collection,
   addDoc,
   getDocs,
-  deleteDoc,
   updateDoc,
+  deleteDoc,
   doc
 } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
-
 const firebaseConfig = {
   apiKey: "AIzaSyDvjnzN9K6fntjv8CaKK-6ENjjyYnMOWOE",
   authDomain: "honourable-ismail-sabon-garu.firebaseapp.com",
@@ -18,28 +17,77 @@ const firebaseConfig = {
   messagingSenderId: "433993330936",
   appId: "1:433993330936:web:1c289e2fdf819d4cb3cb0d"
 };
-
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 const form = document.getElementById("registrationForm");
+function generateApplicationId() {
+
+let lastNumber = Number(localStorage.getItem("lastApplicationId")) || 1000;
+
+lastNumber++;
+
+localStorage.setItem("lastApplicationId", lastNumber);
+
+return `TTT/SBNGR/${lastNumber}`;
+
+}
 
 if (!form) {
-  console.log("Registration form not found.");
+
+console.log("Registration form not found.");
+
 } else {
 
 form.addEventListener("submit", async (e) => {
 
 e.preventDefault();
 
-const passportFile = document.getElementById("passport").files[0];
+const passport = document.getElementById("passport").files[0];
 
-if (!passportFile) {
+if (!passport) {
+
 alert("Please upload your passport photo.");
+
 return;
+
 }
 
-document.body.innerHTML = `
+const reader = new FileReader();
+  reader.onload = async function () {
+
+const applicationId = generateApplicationId();
+
+const registration = {
+
+applicationId: applicationId,
+
+passport: reader.result,
+
+firstName: document.getElementById("firstName").value.trim(),
+
+middleName: document.getElementById("middleName").value.trim(),
+
+lastName: document.getElementById("lastName").value.trim(),
+
+address: document.getElementById("address").value.trim(),
+
+phoneNumber: document.getElementById("phoneNumber").value.trim(),
+
+gender: document.getElementById("gender").value,
+
+state: document.getElementById("state").value,
+
+lga: document.getElementById("lga").value,
+
+ward: document.getElementById("ward").value,
+
+status: "Pending",
+
+createdAt: new Date()
+
+};
+ document.body.innerHTML = `
 <div style="
 min-height:100vh;
 display:flex;
@@ -63,7 +111,7 @@ animation:spin 1s linear infinite;
 Processing Your Application...
 </h2>
 
-<p>Please wait...</p>
+<p>Please wait while we submit your application.</p>
 
 <style>
 @keyframes spin{
@@ -75,46 +123,10 @@ to{transform:rotate(360deg);}
 </div>
 `;
 
-const reader = new FileReader();
-
-reader.onload = async function () {
-
-const applicationId = "TTT-" + Date.now();
-
-const registration = {
-
-applicationId,
-
-passport: reader.result,
-
-firstName: document.getElementById("firstName").value,
-
-middleName: document.getElementById("middleName").value,
-
-lastName: document.getElementById("lastName").value,
-
-address: document.getElementById("address").value,
-
-phoneNumber: document.getElementById("phoneNumber").value,
-
-gender: document.getElementById("gender").value,
-
-state: document.getElementById("state").value,
-
-lga: document.getElementById("lga").value,
-
-ward: document.getElementById("ward").value,
-
-status: "Pending",
-
-createdAt: new Date()
-
-};
- try {
+try {
 
 await addDoc(collection(db, "registrations"), registration);
-
-setTimeout(() => {
+  setTimeout(() => {
 
 document.body.innerHTML = `
 <div style="
@@ -123,8 +135,8 @@ display:flex;
 justify-content:center;
 align-items:center;
 background:#f4f7f6;
-font-family:Arial;
 padding:20px;
+font-family:Arial;
 ">
 
 <div style="
@@ -139,13 +151,13 @@ box-shadow:0 10px 30px rgba(0,0,0,.15);
 
 <div style="font-size:60px;color:green;">✓</div>
 
-<h2>Application Received</h2>
+<h2>Application Submitted Successfully</h2>
 
-<p>Your registration has been submitted successfully.</p>
-
-<p><b>Application ID</b></p>
+<p>Your Application ID</p>
 
 <h3 style="color:#006400;">${applicationId}</h3>
+
+<p>Please save this Application ID. You will need the last 4 digits to print your ID Card.</p>
 
 <button onclick="location.reload()" style="
 padding:12px 20px;
@@ -163,7 +175,7 @@ Back To Home
 </div>
 `;
 
-}, 1000);
+}, 4000);
 
 } catch (err) {
 
@@ -175,8 +187,8 @@ alert("Registration failed: " + err.message);
 
 };
 
-reader.readAsDataURL(passportFile);
+reader.readAsDataURL(passport);
 
 });
 
- }
+}
