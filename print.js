@@ -41,13 +41,13 @@ if (data.applicationId && data.applicationId.includes(lastFour)) {
                            }
   
 });
-  if (!found) {
+if (found.status !== "Approved") {
 
-  alert("Application ID not found.");
+  alert("Your ID Card is not ready yet.\n\nPlease wait until the Admin approves your registration.");
 
   return;
 
-  }
+}
   
 document.body.innerHTML = `
 <div style="
