@@ -21,7 +21,8 @@ const searchBtn = document.getElementById("searchBtn");
 const searchId = document.getElementById("searchId");
 
 searchBtn.addEventListener("click", async () => {
-
+searchBtn.innerHTML = "Processing...";
+searchBtn.disabled = true;
 const lastFour = searchId.value.trim();
 
 if(lastFour.length !== 4){
@@ -52,6 +53,8 @@ if(found.status !== "Approved"){
 alert("Your ID Card is not ready yet.\n\nPlease wait until the Admin approves your registration.");
 return;
 }
+ searchBtn.innerHTML = "Search ID Card";
+searchBtn.disabled = false; 
 document.body.innerHTML = `
 <div style="
 min-height:100vh;
