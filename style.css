@@ -275,3 +275,29 @@ z-index:100;
 #searchBtn:hover{
     background:#008000;
    }
+/* ===== PREMIUM PRINT PAGE ===== */
+
+body{
+    background:#eef5ef;
+    font-family:Arial, sans-serif;
+}
+
+.print-container{
+    border-top:8px solid #006400;
+}
+
+.print-header{
+    background:#006400;
+    color:#fff;
+    padding:20px;
+    border-radius:15px;
+    margin:-25px -25px 25px -25px;
+}
+
+.print-header h2{
+    color:#fff;
+    font-size:22px;
+}
+
+.print-header p{
+    color:#FFD700;
