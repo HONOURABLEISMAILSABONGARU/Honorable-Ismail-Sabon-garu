@@ -149,9 +149,12 @@ ${found.status}
 </div>
 
 <div style="
-display:flex;
-padding:25px;
-gap:30px;
+display:grid;
+grid-template-columns:230px 1fr;
+padding:30px;
+gap:40px;
+align-items:start;
+height:100%;
 ">
 <div style="
 width:230px;
@@ -177,7 +180,7 @@ PASSPORT PHOTO
 </div>
 
 <div style="
-flex:1;
+width:100%;
 ">
 
 <table style="
