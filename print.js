@@ -79,206 +79,182 @@ return;
 
 }
 document.body.innerHTML = `
+
 <div style="
+width:100%;
 min-height:100vh;
-background:#e9f5e9;
 display:flex;
 justify-content:center;
 align-items:center;
+background:#eef5ee;
 padding:20px;
-font-family:Arial,sans-serif;
 ">
 
 <div style="
-width:900px;
-height:500px;
-background:#ffffff;
-border:4px solid #006400;
+width:950px;
+height:560px;
+background:white;
 border-radius:20px;
 overflow:hidden;
-box-shadow:0 10px 30px rgba(0,0,0,.2);
+box-shadow:0 10px 30px rgba(0,0,0,.25);
+border:3px solid #006400;
 ">
 
 <div style="
+height:120px;
 background:#006400;
-color:#fff;
-padding:20px;
 display:flex;
 align-items:center;
-justify-content:space-between;
+padding:20px;
+color:white;
 ">
-
-<div style="display:flex;align-items:center;gap:15px;">
 
 <img src="20260802_132740.png"
 style="
-width:70px;
-height:70px;
+width:80px;
+height:80px;
 border-radius:50%;
-background:#fff;
+background:white;
 padding:5px;
 ">
 
-<div>
+<div style="margin-left:20px;">
 
-<h2 style="margin:0;">
+<h1 style="
+margin:0;
+font-size:34px;
+">
 HONOURABLE ISMAIL SABON GARU
-</h2>
+</h1>
 
-<p style="margin:0;color:#FFD700;">
+<p style="
+margin-top:8px;
+font-size:20px;
+color:#FFD700;
+">
 OFFICIAL MEMBERSHIP ID CARD
 </p>
 
 </div>
 
 </div>
-
-<div style="
-font-size:18px;
-font-weight:bold;
-background:#fff;
-color:#006400;
-padding:8px 15px;
-border-radius:20px;
-">
-
-${found.status}
-
-</div>
-
-</div>
-
 <div style="
 display:grid;
-grid-template-columns:230px 1fr;
-padding:30px;
-gap:40px;
-align-items:start;
-height:100%;
+grid-template-columns:280px 1fr;
+gap:30px;
+padding:25px;
+height:440px;
 ">
-<div style="
-width:230px;
-text-align:center;
-">
+
+<div style="text-align:center;">
 
 <img src="${found.passport}"
 style="
-width:180px;
-height:220px;
+width:220px;
+height:250px;
 object-fit:cover;
-border:3px solid #006400;
-border-radius:10px;
+border:4px solid #006400;
+border-radius:15px;
 ">
 
-<h3 style="
+<h2 style="
 margin-top:15px;
 color:#006400;
+font-size:28px;
+">
+${found.firstName} ${found.middleName} ${found.lastName}
+</h2>
+
+<p style="
+margin-top:8px;
+font-size:18px;
+font-weight:bold;
+color:#555;
 ">
 PASSPORT PHOTO
-</h3>
+</p>
 
 </div>
 
-<div style="
-width:100%;
-">
-
+<div>
 <table style="
 width:100%;
 border-collapse:collapse;
-font-size:18px;
+font-size:20px;
 ">
 
 <tr>
-<td><b>FULL NAME</b></td>
-<td>${found.firstName} ${found.middleName} ${found.lastName}</td>
-</tr>
-
-<tr>
-<td><b>APPLICATION ID</b></td>
+<td style="padding:12px;font-weight:bold;">Application ID</td>
 <td>${found.applicationId}</td>
 </tr>
 
 <tr>
-<td><b>PHONE NUMBER</b></td>
+<td style="padding:12px;font-weight:bold;">Phone Number</td>
 <td>${found.phoneNumber}</td>
 </tr>
 
 <tr>
-<td><b>STATE</b></td>
+<td style="padding:12px;font-weight:bold;">State</td>
 <td>${found.state}</td>
 </tr>
 
 <tr>
-<td><b>LGA</b></td>
+<td style="padding:12px;font-weight:bold;">LGA</td>
 <td>${found.lga}</td>
 </tr>
 
 <tr>
-<td><b>WARD</b></td>
+<td style="padding:12px;font-weight:bold;">Ward</td>
 <td>${found.ward}</td>
 </tr>
 
-</table>
-<hr style="margin:20px 0;">
+<tr>
+<td style="padding:12px;font-weight:bold;">Status</td>
+<td style="
+color:green;
+font-weight:bold;
+">
+${found.status}
+</td>
+</tr>
 
+</table>
 <div style="
+margin-top:40px;
 display:flex;
 justify-content:space-between;
 align-items:flex-end;
-margin-top:20px;
 ">
 
-<div>
+<div style="text-align:center;">
+
+<div style="
+width:220px;
+border-top:2px solid #000;
+margin-bottom:8px;
+"></div>
+
+<b>Authorized Signature</b>
+
+</div>
+
+<div style="text-align:center;">
 
 <div style="
 width:120px;
 height:120px;
 border:2px dashed #006400;
 display:flex;
-justify-content:center;
 align-items:center;
-font-size:14px;
-color:#666;
+justify-content:center;
+color:#888;
+font-weight:bold;
 ">
 QR CODE
 </div>
 
 </div>
 
-<div style="text-align:center;">
-
-<p style="
-border-top:2px solid #000;
-padding-top:5px;
-width:180px;
-margin:auto;
-">
-Authorized Signature
-</p>
-
-</div>
-
-</div>
-
-<div style="
-margin-top:25px;
-text-align:center;
-">
-
-<button onclick="window.print()" style="
-padding:15px 35px;
-background:#006400;
-color:white;
-border:none;
-border-radius:10px;
-font-size:18px;
-cursor:pointer;
-font-weight:bold;
-">
-🖨 Print ID Card
-</button>
-
 </div>
 
 </div>
@@ -286,33 +262,5 @@ font-weight:bold;
 </div>
 
 </div>
+
 `;
-const style = document.createElement("style");
-
-style.innerHTML = `
-@media print{
-
-@page{
-size: landscape;
-margin:0;
-}
-
-body{
-margin:0;
-padding:0;
-background:white;
-}
-
-button{
-display:none;
-}
-
-}
-`;
-
-document.head.appendChild(style);
-
-searchBtn.disabled = false;
-searchBtn.innerHTML = "Search ID Card";
-
-});  
