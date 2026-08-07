@@ -147,14 +147,134 @@ loadApplications();
 
 window.deleteApplication = async function(id){
 
-const ok = confirm("Are you sure you want to delete this application?");
+    // Create custom confirmation popup
+    const overlay = document.createElement("div");
 
-if(!ok) return;
+    overlay.style.cssText = `
+        position:fixed;
+        inset:0;
+        background:rgba(0,0,0,0.65);
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        z-index:99999;
+        padding:20px;
+    `;
 
-await deleteDoc(doc(db,"registrations",id));
+    overlay.innerHTML = `
+        <div style="
+            background:white;
+            width:100%;
+            max-width:380px;
+            border-radius:20px;
+            padding:25px;
+            text-align:center;
+            box-shadow:0 15px 40px rgba(0,0,0,0.3);
+            font-family:Arial,sans-serif;
+        ">
 
-loadApplications();
+            <div style="
+                width:65px;
+                height:65px;
+                margin:0 auto 15px;
+                border-radius:50%;
+                background:#fee2e2;
+                display:flex;
+                align-items:center;
+                justify-content:center;
+                font-size:32px;
+            ">
+                🗑️
+            </div>
 
-}
+            <h2 style="
+                margin:0 0 10px;
+                color:#006400;
+                font-size:24px;
+            ">
+                Delete Application
+            </h2>
+
+            <p style="
+                margin:0 0 25px;
+                color:#555;
+                font-size:16px;
+                line-height:1.5;
+            ">
+                Are you sure you want to delete this application?
+                <br>
+                <b>This action cannot be undone.</b>
+            </p>
+
+            <div style="
+                display:flex;
+                gap:12px;
+            ">
+
+                <button id="cancelDelete" style="
+                    flex:1;
+                    padding:13px;
+                    border:none;
+                    border-radius:10px;
+                    background:#e5e7eb;
+                    color:#333;
+                    font-size:16px;
+                    font-weight:bold;
+                    cursor:pointer;
+                ">
+                    Cancel
+                </button>
+
+                <button id="confirmDelete" style="
+                    flex:1;
+                    padding:13px;
+                    border:none;
+                    border-radius:10px;
+                    background:#dc2626;
+                    color:white;
+                    font-size:16px;
+                    font-weight:bold;
+                    cursor:pointer;
+                ">
+                    Delete
+                </button>
+
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(overlay);
+
+    // Cancel
+    document.getElementById("cancelDelete").onclick = function(){
+        overlay.remove();
+    };
+
+    // Confirm Delete
+    document.getElementById("confirmDelete").onclick = async function(){
+
+        this.disabled = true;
+        this.textContent = "Deleting...";
+
+        try {
+
+            await deleteDoc(
+                doc(db, "registrations", id)
+            );
+
+            overlay.remove();
+
+            loadApplications();
+
+        } catch(error) {
+
+            console.error(error);
+
+            alert("Failed to delete application.");
+
+            overlay.remove();
+        }
+    };
+};
 
 loadApplications();
