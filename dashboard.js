@@ -26,12 +26,206 @@ const applicantsList = document.getElementById("applicantsList");
 
 async function loadApplications(){
 
-const snapshot = await getDocs(collection(db,"registrations"));
+    totalApplications.textContent = "Loading...";
 
-totalApplications.textContent = snapshot.size + " Applications";
+    applicantsList.innerHTML = `
+        <div style="
+            text-align:center;
+            padding:25px;
+            color:#006400;
+            font-weight:bold;
+        ">
+            Loading applications...
+        </div>
+    `;
 
-applicantsList.innerHTML = "";
-  snapshot.forEach((documentItem)=>{
+    try {
+
+        const snapshot = await Promise.race([
+            getDocs(collection(db, "registrations")),
+
+            new Promise((_, reject) =>
+                setTimeout(() => reject(new Error("timeout")), 5000)
+            )
+        ]);
+
+        totalApplications.textContent =
+            snapshot.size + " Applications";
+
+        applicantsList.innerHTML = "";
+
+        snapshot.forEach((documentItem) => {
+
+            const data = documentItem.data();
+
+            if (!data.passport) {
+                data.passport = "logo.png";
+            }
+
+            applicantsList.innerHTML += `
+                <div style="
+                    background:#fff;
+                    border-radius:12px;
+                    padding:15px;
+                    margin-bottom:15px;
+                    box-shadow:0 2px 8px rgba(0,0,0,0.1);
+                    display:flex;
+                    justify-content:space-between;
+                    align-items:center;
+                    gap:15px;
+                ">
+
+                    <div style="
+                        display:flex;
+                        gap:15px;
+                        align-items:center;
+                    ">
+
+                        <img
+                            src="${data.passport}"
+                            style="
+                                width:80px;
+                                height:80px;
+                                border-radius:10px;
+                                object-fit:cover;
+                                border:2px solid #006400;
+                            "
+                        >
+
+                        <div>
+
+                            <h3 style="
+                                margin:0 0 10px;
+                                color:#006400;
+                            ">
+                                ${data.firstName}
+                                ${data.middleName || ""}
+                                ${data.lastName || ""}
+                            </h3>
+
+                            <p>
+                                <b>ID:</b>
+                                ${data.applicationId}
+                            </p>
+
+                            <p>
+                                <b>Phone:</b>
+                                ${data.phoneNumber}
+                            </p>
+
+                            <p>
+                                Status:
+                                <b style="
+                                    color:${data.status === "Approved"
+                                        ? "green"
+                                        : "orange"};
+                                ">
+                                    ${data.status}
+                                </b>
+                            </p>
+
+                        </div>
+                    </div>
+
+                    <div>
+
+                        ${
+                            data.status === "Pending"
+                            ? `
+                                <button
+                                    onclick="approveApplication('${documentItem.id}')"
+                                    style="
+                                        padding:10px 15px;
+                                        background:#16a34a;
+                                        color:#fff;
+                                        border:none;
+                                        border-radius:8px;
+                                        cursor:pointer;
+                                    "
+                                >
+                                    ✅ Approve
+                                </button>
+                            `
+                            : `
+                                <p style="
+                                    color:green;
+                                    font-weight:bold;
+                                    margin-bottom:10px;
+                                    text-align:center;
+                                ">
+                                    ✅ Approved
+                                </p>
+                            `
+                        }
+
+                        <button
+                            onclick="deleteApplication('${documentItem.id}')"
+                            style="
+                                padding:10px 15px;
+                                background:#dc2626;
+                                color:#fff;
+                                border:none;
+                                border-radius:8px;
+                                cursor:pointer;
+                            "
+                        >
+                            🗑️ Delete
+                        </button>
+
+                    </div>
+
+                </div>
+            `;
+
+        });
+
+    } catch (error) {
+
+        console.error("Loading error:", error);
+
+        totalApplications.textContent = "Unable to load";
+
+        applicantsList.innerHTML = `
+            <div style="
+                text-align:center;
+                padding:25px;
+            ">
+
+                <div style="
+                    font-size:40px;
+                    margin-bottom:10px;
+                ">
+                    ⚠️
+                </div>
+
+                <h3 style="color:#dc2626;">
+                    Unable to load applications
+                </h3>
+
+                <p style="color:#555;">
+                    Please check your internet connection
+                    and try again.
+                </p>
+
+                <button
+                    onclick="loadApplications()"
+                    style="
+                        padding:12px 25px;
+                        background:#006400;
+                        color:white;
+                        border:none;
+                        border-radius:8px;
+                        font-weight:bold;
+                        cursor:pointer;
+                    "
+                >
+                    🔄 Try Again
+                </button>
+
+            </div>
+        `;
+    }
+}
 
 const data = documentItem.data();
 if (!data.passport) {
