@@ -34,7 +34,9 @@ applicantsList.innerHTML = "";
   snapshot.forEach((documentItem)=>{
 
 const data = documentItem.data();
-
+if (!data.passport) {
+    data.passport = "logo.png";
+  }
 applicantsList.innerHTML += `
 
 <div style="
