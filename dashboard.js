@@ -5,9 +5,9 @@ import {
   collection,
   getDocs,
   doc,
-  updateDoc
+  updateDoc,
+  deleteDoc
 } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
-
 const firebaseConfig = {
   apiKey: "AIzaSyDvjnzN9K6fntjv8CaKK-6ENjjyYnMOWOE",
   authDomain: "honourable-ismail-sabon-garu.firebaseapp.com",
@@ -76,4 +76,4 @@ window.approveApplication = async function(id){
 
     location.reload();
 }
-window.approveApplication = async function(id){
+
