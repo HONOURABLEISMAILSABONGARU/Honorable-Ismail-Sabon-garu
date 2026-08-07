@@ -184,7 +184,7 @@ window.deleteApplication = async function(id){
                 justify-content:center;
                 font-size:32px;
             ">
-                🗑️
+                
             </div>
 
             <h2 style="
