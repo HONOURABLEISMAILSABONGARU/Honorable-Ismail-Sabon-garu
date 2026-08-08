@@ -26,9 +26,52 @@ const applicantsList = document.getElementById("applicantsList");
 
 async function loadApplications(){
 
-    totalApplications.textContent = "Loading...";
+    // Show dashboard immediately
+    totalApplications.textContent = "Loading applications...";
 
     applicantsList.innerHTML = `
+        <div style="
+            text-align:center;
+            padding:25px;
+            color:#006400;
+            font-weight:bold;
+        ">
+            <div style="
+                font-size:30px;
+                margin-bottom:10px;
+            ">⏳</div>
+
+            Loading applications...
+        </div>
+    `;
+
+    try {
+
+        const snapshot = await Promise.race([
+            getDocs(collection(db, "registrations")),
+
+            new Promise((_, reject) =>
+                setTimeout(
+                    () => reject(new Error("TIMEOUT")),
+                    5000
+                )
+            )
+        ]);
+
+        totalApplications.textContent =
+            snapshot.size + " Applications";
+
+        applicantsList.innerHTML = "";
+
+        snapshot.forEach((documentItem) => {
+
+            const data = documentItem.data();
+
+            if (!data.passport) {
+                data.passport = "logo.png";
+            }
+
+            applicantsList.innerHTML += `
         <div style="
             text-align:center;
             padding:25px;
@@ -469,6 +512,8 @@ window.deleteApplication = async function(id){
             overlay.remove();
         }
     };
-};
 
-loadApplications();
+// Open dashboard immediately
+setTimeout(() => {
+    loadApplications();
+}, 100);
