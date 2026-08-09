@@ -1,165 +1,525 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Honourable Ismail Sabon Garu - Registration Portal</title>
 
-<title>HONOURABLE ISMAIL SABON GARU | Membership Registration</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
 
-<link rel="stylesheet" href="style.css">
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f4f8f5;
+      color: #222;
+    }
 
+    .header {
+      background: linear-gradient(135deg, #006400, #0b8f4d);
+      color: white;
+      text-align: center;
+      padding: 25px 15px;
+    }
+
+    .header img {
+      width: 85px;
+      height: 85px;
+      object-fit: contain;
+      background: white;
+      border-radius: 50%;
+      padding: 5px;
+      margin-bottom: 10px;
+    }
+
+    .header h1 {
+      margin: 5px 0;
+      font-size: 25px;
+    }
+
+    .header p {
+      margin: 5px 0;
+      font-size: 16px;
+    }
+
+    .container {
+      width: 94%;
+      max-width: 650px;
+      margin: 25px auto;
+    }
+
+    .card {
+      background: white;
+      border-radius: 18px;
+      padding: 22px;
+      box-shadow: 0 8px 25px rgba(0,0,0,.10);
+    }
+
+    .title {
+      text-align: center;
+      color: #006400;
+      margin: 0 0 20px;
+      font-size: 24px;
+    }
+
+    .field {
+      margin-bottom: 16px;
+    }
+
+    label {
+      display: block;
+      color: #006400;
+      font-weight: bold;
+      margin-bottom: 7px;
+    }
+
+    input,
+    select {
+      width: 100%;
+      padding: 14px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      font-size: 16px;
+      outline: none;
+      background: white;
+    }
+
+    input:focus,
+    select:focus {
+      border-color: #006400;
+      box-shadow: 0 0 0 2px rgba(0,100,0,.08);
+    }
+
+    .passport-box {
+      text-align: center;
+      border: 2px dashed #006400;
+      border-radius: 12px;
+      padding: 18px;
+    }
+
+    #passportPreview {
+      display: none;
+      width: 120px;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 10px;
+      margin: 10px auto;
+      border: 2px solid #006400;
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 15px;
+      border: 0;
+      border-radius: 10px;
+      background: #006400;
+      color: white;
+      font-size: 17px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 8px;
+    }
+
+    .submit-btn:disabled {
+      opacity: .65;
+      cursor: not-allowed;
+    }
+
+    .admin-btn {
+      display: block;
+      width: 100%;
+      padding: 13px;
+      margin-top: 15px;
+      border: 2px solid #006400;
+      border-radius: 10px;
+      background: white;
+      color: #006400;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .footer {
+      text-align: center;
+      padding: 25px 10px;
+      color: #555;
+    }
+
+    .footer strong {
+      color: #006400;
+      font-size: 18px;
+    }
+
+    @media(max-width:480px) {
+      .header h1 {
+        font-size: 21px;
+      }
+
+      .card {
+        padding: 17px;
+      }
+
+      .title {
+        font-size: 21px;
+      }
+    }
+  </style>
 </head>
-    
-<header class="header">
 
-<img src="20260802_132740.png" alt="TTT Logo" class="logo">
+<body>
 
-<h2>WELCOME TO</h2>
+  <header class="header">
 
-<h1>HONOURABLE ISMAIL SABON GARU</h1>
+    <img src="logo.png" alt="Logo">
 
-<p class="subtitle">MEMBERSHIP REGISTRATION FORM</p>
+    <h1>WELCOME</h1>
 
-</header>
+    <h1>HONOURABLE ISMAIL SABON GARU</h1>
 
-<main class="container">
+    <p>Official Registration Portal</p>
 
-<form id="registrationForm">
+  </header>
 
-<div class="form-group">
-<label for="passport">Passport Photo *</label>
-<input type="file"
-id="passport"
-accept=".jpg,.jpeg,.png"
-required>
-</div>
 
-<div class="form-group">
-<label for="firstName">First Name *</label>
-<input type="text"
-id="firstName"
-placeholder="Enter First Name"
-required>
-</div>
+  <main class="container">
 
-<div class="form-group">
-<label for="middleName">Middle Name*</label>
-<input type="text"
-id="middleName"
-placeholder="Enter Middle Name">
-</div>
+    <section class="card">
 
-<div class="form-group">
-<label for="lastName">Last Name *</label>
-<input type="text"
-id="lastName"
-placeholder="Enter Last Name"
-required>
-</div>
+      <h2 class="title">
+        MEMBERSHIP REGISTRATION FORM
+      </h2>
 
-<div class="form-group">
-<label for="address">Address *</label>
-<input type="text"
-id="address"
-placeholder="Enter Your Address"
-required>
-</div>
 
-<div class="form-group">
-<label for="phoneNumber">Phone Number *</label>
-<input type="tel"
-id="phoneNumber"
-placeholder="08012345678"
-maxlength="11"
-required>
-</div>
+      <form id="registrationForm">
 
-<div class="form-group">
-<label for="gender">Gender *</label>
 
-<select id="gender" required>
+        <div class="field">
+          <label for="firstName">
+            First Name *
+          </label>
 
-<option value="<Selected Gender> </option>
+          <input
+            id="firstName"
+            name="firstName"
+            type="text"
+            required
+          >
+        </div>
 
-<option value="Male">Male</option>
 
-<option value="Female">Female</option>
+        <div class="field">
+          <label for="middleName">
+            Middle Name
+          </label>
 
-</select>
+          <input
+            id="middleName"
+            name="middleName"
+            type="text"
+          >
+        </div>
 
-</div>
 
-<div class="form-group">
+        <div class="field">
+          <label for="lastName">
+            Last Name *
+          </label>
 
-<label for="state">State *</label>
+          <input
+            id="lastName"
+            name="lastName"
+            type="text"
+            required
+          >
+        </div>
 
-<select id="state" required>
 
-<option value="" selected disabled>-- Select State --</option>
+        <div class="field">
+          <label for="address">
+            Address *
+          </label>
 
-<option value="Jigawa">Jigawa</option>
+          <input
+            id="address"
+            name="address"
+            type="text"
+            required
+          >
+        </div>
 
-</select>
 
-</div>
+        <div class="field">
+          <label for="phoneNumber">
+            Phone Number *
+          </label>
 
-<div class="form-group">
+          <input
+            id="phoneNumber"
+            name="phoneNumber"
+            type="tel"
+            required
+          >
+        </div>
 
-<label for="lga">LGA *</label>
 
-<select id="lga" required>
+        <div class="field">
+          <label for="gender">
+            Gender *
+          </label>
 
-<option value="" selected disabled>-- Select LGA --</option>
+          <select
+            id="gender"
+            name="gender"
+            required
+          >
+            <option value="">
+              Select Gender
+            </option>
 
-<option value="Hadejia">Hadejia</option>
+            <option value="Male">
+              Male
+            </option>
 
-</select>
+            <option value="Female">
+              Female
+            </option>
+          </select>
+        </div>
 
-</div>
 
-<div class="form-group">
+        <div class="field">
+          <label for="state">
+            State *
+          </label>
 
-<label for="ward">Ward *</label>
+          <select
+            id="state"
+            name="state"
+            required
+          >
+            <option value="">
+              Select State
+            </option>
 
-<select id="ward" required>
+            <option value="Jigawa">
+              Jigawa
+            </option>
+          </select>
+        </div>
 
-<option value="" selected disabled>-- Select Ward --</option>
 
-<option value="Sabon Garu">Sabon Garu</option>
+        <div class="field">
+          <label for="lga">
+            LGA *
+          </label>
 
-</select>
+          <select
+            id="lga"
+            name="lga"
+            required
+          >
+            <option value="">
+              Select LGA
+            </option>
 
-</div>
+            <option value="Hadejia">
+              Hadejia
+            </option>
+          </select>
+        </div>
 
-<button type="submit" class="submit-btn">
 
-Submit Application
+        <div class="field">
+          <label for="ward">
+            Ward *
+          </label>
 
-</button>
+          <select
+            id="ward"
+            name="ward"
+            required
+          >
+            <option value="">
+              Select Ward
+            </option>
 
-</form>
+            <option value="Sabon Garu">
+              Sabon Garu
+            </option>
+          </select>
+        </div>
 
-<div class="admin-link">
 
-<a href="admin.html">
-Admin Login
-    </a>
+        <div class="field">
 
-</div>
+          <label>
+            Passport Photo *
+          </label>
 
-<div class="footer">
+          <div class="passport-box">
 
-<p>Powered by</p>
+            <input
+              id="passport"
+              name="passport"
+              type="file"
+              accept=".jpg,.jpeg,.png,image/jpeg,image/png"
+              required
+            >
 
-<h3>Hamdala Technologies</h3>
+            <img
+              id="passportPreview"
+              alt="Passport Preview"
+            >
 
-<p>09066884265</p>
+            <div
+              style="
+                font-size:13px;
+                color:#666;
+                margin-top:8px;
+              "
+            >
+              JPG or PNG only.
+              Maximum size: 2MB.
+            </div>
 
-</div>
+          </div>
 
-</main>
+        </div>
 
-<script type="module" src="script.js"></script>
+
+        <button
+          id="submitButton"
+          class="submit-btn"
+          type="submit"
+        >
+          Submit Application
+        </button>
+
+      </form>
+
+
+      <button
+        id="adminLogin"
+        class="admin-btn"
+        type="button"
+        onclick="window.location.href='admin.html'"
+      >
+        Admin Login
+      </button>
+
+    </section>
+
+  </main>
+
+
+  <footer class="footer">
+
+    <div>
+      Powered by
+    </div>
+
+    <strong>
+      Hamdala Technologies
+    </strong>
+
+    <div style="margin-top:5px;">
+      09066884265
+    </div>
+
+  </footer>
+
+
+  <script>
+
+    const passportInput =
+      document.getElementById("passport");
+
+    const passportPreview =
+      document.getElementById("passportPreview");
+
+
+    if (passportInput && passportPreview) {
+
+      passportInput.addEventListener(
+        "change",
+        function () {
+
+          const file =
+            this.files && this.files[0];
+
+
+          if (!file) {
+
+            passportPreview.style.display =
+              "none";
+
+            passportPreview.removeAttribute(
+              "src"
+            );
+
+            return;
+          }
+
+
+          if (
+            file.size >
+            2 * 1024 * 1024
+          ) {
+
+            alert(
+              "Passport photo must not be larger than 2MB."
+            );
+
+            this.value = "";
+
+            passportPreview.style.display =
+              "none";
+
+            passportPreview.removeAttribute(
+              "src"
+            );
+
+            return;
+          }
+
+
+          const reader =
+            new FileReader();
+
+
+          reader.onload =
+            function (e) {
+
+              passportPreview.src =
+                e.target.result;
+
+              passportPreview.style.display =
+                "block";
+
+            };
+
+
+          reader.readAsDataURL(file);
+
+        }
+      );
+
+    }
+
+  </script>
+
+
+  <!-- IMPORTANT:
+       This is your existing registration script.
+       Do not rename this file. -->
+
+  <script
+    type="module"
+    src="script.js"
+  ></script>
+
 
 </body>
     </html>
