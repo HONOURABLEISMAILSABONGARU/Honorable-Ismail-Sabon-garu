@@ -4,9 +4,9 @@ import {
   getFirestore,
   collection,
   getDocs,
-  doc,
-  updateDoc,
-  deleteDoc
+  getDocsFromCache,
+  deleteDoc,
+  doc
 } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
 
 
@@ -23,6 +23,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
+const registrationsRef = collection(db, "registrations");
 
 const totalApplications =
   document.getElementById("totalApplications");
@@ -31,9 +32,137 @@ const applicantsList =
   document.getElementById("applicantsList");
 
 
-// ===============================
+// ======================================
+// DISPLAY APPLICATIONS
+// ======================================
+
+function displayApplications(snapshot) {
+
+  totalApplications.textContent =
+    snapshot.size + " Applications";
+
+  applicantsList.innerHTML = "";
+
+  if (snapshot.empty) {
+
+    applicantsList.innerHTML = `
+      <div style="
+        text-align:center;
+        padding:30px;
+        color:#666;
+      ">
+        No applications found.
+      </div>
+    `;
+
+    return;
+  }
+
+
+  snapshot.forEach((item) => {
+
+    const data = item.data();
+
+    const passport =
+      data.passport || "logo.png";
+
+
+    applicantsList.innerHTML += `
+
+      <div style="
+        background:#fff;
+        padding:12px;
+        margin-bottom:12px;
+        border-radius:12px;
+        box-shadow:0 2px 8px rgba(0,0,0,.10);
+        display:flex;
+        gap:12px;
+        align-items:center;
+      ">
+
+        <img
+          src="${passport}"
+          style="
+            width:70px;
+            height:70px;
+            object-fit:cover;
+            border-radius:10px;
+            border:2px solid #006400;
+            flex-shrink:0;
+          "
+        >
+
+        <div style="
+          flex:1;
+          min-width:0;
+        ">
+
+          <h3 style="
+            margin:0 0 6px;
+            color:#006400;
+            font-size:17px;
+            word-break:break-word;
+          ">
+            ${data.firstName || ""}
+            ${data.middleName || ""}
+            ${data.lastName || ""}
+          </h3>
+
+          <p style="
+            margin:3px 0;
+            font-size:13px;
+            word-break:break-word;
+          ">
+            <b>ID:</b>
+            ${data.applicationId || ""}
+          </p>
+
+          <p style="
+            margin:3px 0;
+            font-size:13px;
+          ">
+            <b>Phone:</b>
+            ${data.phoneNumber || ""}
+          </p>
+
+        </div>
+
+
+        <div style="
+          width:100px;
+          flex-shrink:0;
+        ">
+
+          <button
+            onclick="deleteApplication('${item.id}')"
+            style="
+              width:100%;
+              padding:8px;
+              background:#dc2626;
+              color:white;
+              border:none;
+              border-radius:7px;
+              cursor:pointer;
+              font-size:13px;
+            "
+          >
+            🗑 Delete
+          </button>
+
+        </div>
+
+      </div>
+
+    `;
+
+  });
+
+}
+
+
+// ======================================
 // LOAD APPLICATIONS
-// ===============================
+// ======================================
 
 async function loadApplications() {
 
@@ -51,200 +180,30 @@ async function loadApplications() {
   `;
 
 
+  // First try local cache
   try {
 
-    const snapshot = await getDocs(
-      collection(db, "registrations")
-    );
+    const cached =
+      await getDocsFromCache(registrationsRef);
 
-
-    totalApplications.textContent =
-      snapshot.size + " Applications";
-
-
-    applicantsList.innerHTML = "";
-
-
-    if (snapshot.empty) {
-
-      applicantsList.innerHTML = `
-        <div style="
-          text-align:center;
-          padding:30px;
-          color:#666;
-        ">
-          No applications found.
-        </div>
-      `;
-
-      return;
+    if (!cached.empty) {
+      displayApplications(cached);
     }
 
+  } catch (cacheError) {
 
-    snapshot.forEach((item) => {
+    console.log("No local cache yet.");
 
-      const data = item.data();
-
-      const passport =
-        data.passport || "logo.png";
+  }
 
 
-      applicantsList.innerHTML += `
+  // Then get latest data from Firebase
+  try {
 
-        <div style="
-          background:#fff;
-          padding:12px;
-          margin-bottom:12px;
-          border-radius:12px;
-          box-shadow:0 2px 8px rgba(0,0,0,.10);
-          display:flex;
-          gap:12px;
-          align-items:center;
-        ">
+    const fresh =
+      await getDocs(registrationsRef);
 
-
-          <img
-            src="${passport}"
-            style="
-              width:70px;
-              height:70px;
-              object-fit:cover;
-              border-radius:10px;
-              border:2px solid #006400;
-              flex-shrink:0;
-            "
-          >
-
-
-          <div style="
-            flex:1;
-            min-width:0;
-          ">
-
-            <h3 style="
-              margin:0 0 6px;
-              color:#006400;
-              font-size:17px;
-              word-break:break-word;
-            ">
-              ${data.firstName || ""}
-              ${data.middleName || ""}
-              ${data.lastName || ""}
-            </h3>
-
-
-            <p style="
-              margin:3px 0;
-              font-size:13px;
-              word-break:break-word;
-            ">
-              <b>ID:</b>
-              ${data.applicationId || ""}
-            </p>
-
-
-            <p style="
-              margin:3px 0;
-              font-size:13px;
-            ">
-              <b>Phone:</b>
-              ${data.phoneNumber || ""}
-            </p>
-
-
-            <p style="
-              margin:3px 0;
-              font-size:13px;
-            ">
-              <b>Status:</b>
-
-              <span style="
-                color:${
-                  data.status === "Approved"
-                  ? "green"
-                  : "orange"
-                };
-                font-weight:bold;
-              ">
-                ${data.status || "Pending"}
-              </span>
-
-            </p>
-
-          </div>
-
-
-          <div style="
-            width:100px;
-            flex-shrink:0;
-          ">
-
-
-            ${
-              data.status === "Pending"
-
-              ? `
-
-                <button
-                  onclick="approveApplication('${item.id}')"
-                  style="
-                    width:100%;
-                    padding:8px;
-                    background:#16a34a;
-                    color:white;
-                    border:none;
-                    border-radius:7px;
-                    cursor:pointer;
-                    font-size:13px;
-                  "
-                >
-                  ✅ Approve
-                </button>
-
-              `
-
-              : `
-
-                <div style="
-                  color:green;
-                  font-size:13px;
-                  font-weight:bold;
-                  text-align:center;
-                  margin-bottom:8px;
-                ">
-                  ✅ Approved
-                </div>
-
-              `
-            }
-
-
-            <button
-              onclick="deleteApplication('${item.id}')"
-              style="
-                width:100%;
-                padding:8px;
-                background:#dc2626;
-                color:white;
-                border:none;
-                border-radius:7px;
-                cursor:pointer;
-                font-size:13px;
-                margin-top:8px;
-              "
-            >
-              🗑 Delete
-            </button>
-
-
-          </div>
-
-        </div>
-
-      `;
-
-    });
-
+    displayApplications(fresh);
 
   } catch (error) {
 
@@ -254,106 +213,70 @@ async function loadApplications() {
     );
 
 
-    totalApplications.textContent =
-      "Unable to load";
+    if (
+      totalApplications.textContent === "Loading..."
+    ) {
 
+      totalApplications.textContent =
+        "Unable to load";
 
-    applicantsList.innerHTML = `
-
-      <div style="
-        text-align:center;
-        padding:30px;
-      ">
-
+      applicantsList.innerHTML = `
         <div style="
-          font-size:40px;
-          margin-bottom:10px;
+          text-align:center;
+          padding:30px;
         ">
-          ⚠️
+
+          <div style="
+            font-size:40px;
+            margin-bottom:10px;
+          ">
+            ⚠️
+          </div>
+
+          <h3 style="
+            color:#dc2626;
+          ">
+            Unable to load applications
+          </h3>
+
+          <p style="
+            color:#555;
+            font-size:14px;
+          ">
+            Please check your internet connection.
+          </p>
+
+          <button
+            onclick="loadApplications()"
+            style="
+              padding:10px 20px;
+              background:#006400;
+              color:white;
+              border:none;
+              border-radius:8px;
+              cursor:pointer;
+              font-weight:bold;
+            "
+          >
+            🔄 Try Again
+          </button>
+
         </div>
+      `;
 
-
-        <h3 style="
-          color:#dc2626;
-          margin-bottom:8px;
-        ">
-          Unable to load applications
-        </h3>
-
-
-        <p style="
-          color:#555;
-          font-size:14px;
-          margin-bottom:15px;
-        ">
-          Please check your internet connection.
-        </p>
-
-
-        <button
-          onclick="loadApplications()"
-          style="
-            padding:10px 20px;
-            background:#006400;
-            color:white;
-            border:none;
-            border-radius:8px;
-            cursor:pointer;
-            font-weight:bold;
-          "
-        >
-          🔄 Try Again
-        </button>
-
-      </div>
-
-    `;
+    }
 
   }
 
 }
 
 
-// ===============================
-// APPROVE
-// ===============================
-
-window.approveApplication =
-async function(id) {
-
-  try {
-
-    await updateDoc(
-      doc(db, "registrations", id),
-      {
-        status: "Approved"
-      }
-    );
-
-
-    await loadApplications();
-
-
-  } catch (error) {
-
-    console.error(error);
-
-    alert(
-      "Failed to approve application."
-    );
-
-  }
-
-};
-
-
-// ===============================
-// DELETE
-// ===============================
+// ======================================
+// DELETE APPLICATION
+// ======================================
 
 window.deleteApplication =
 async function(id) {
-
 
   const overlay =
     document.createElement("div");
@@ -384,7 +307,6 @@ async function(id) {
       box-shadow:0 15px 40px rgba(0,0,0,.3);
     ">
 
-
       <div style="
         font-size:40px;
         margin-bottom:10px;
@@ -392,14 +314,12 @@ async function(id) {
         🗑️
       </div>
 
-
       <h2 style="
         color:#006400;
         margin:0 0 10px;
       ">
         Delete Application
       </h2>
-
 
       <p style="
         color:#555;
@@ -411,12 +331,10 @@ async function(id) {
         <b>This action cannot be undone.</b>
       </p>
 
-
       <div style="
         display:flex;
         gap:10px;
       ">
-
 
         <button
           id="cancelDelete"
@@ -428,12 +346,10 @@ async function(id) {
             background:#e5e7eb;
             color:#333;
             font-weight:bold;
-            cursor:pointer;
           "
         >
           Cancel
         </button>
-
 
         <button
           id="confirmDelete"
@@ -445,12 +361,10 @@ async function(id) {
             background:#dc2626;
             color:#fff;
             font-weight:bold;
-            cursor:pointer;
           "
         >
           Delete
         </button>
-
 
       </div>
 
@@ -459,9 +373,7 @@ async function(id) {
   `;
 
 
-  document.body.appendChild(
-    overlay
-  );
+  document.body.appendChild(overlay);
 
 
   document.getElementById(
@@ -476,7 +388,6 @@ async function(id) {
   document.getElementById(
     "confirmDelete"
   ).onclick = async function() {
-
 
     this.disabled = true;
 
@@ -494,12 +405,9 @@ async function(id) {
         )
       );
 
-
       overlay.remove();
 
-
       await loadApplications();
-
 
     } catch (error) {
 
@@ -518,8 +426,8 @@ async function(id) {
 };
 
 
-// ===============================
+// ======================================
 // START
-// ===============================
+// ======================================
 
 loadApplications();
