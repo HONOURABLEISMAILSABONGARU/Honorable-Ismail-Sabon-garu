@@ -469,7 +469,19 @@ if (form) {
                             Application Submitted Successfully
                         </h2>
 
-
+                         <img
+    src="${compressedPassport}"
+    alt="Applicant Photo"
+    style="
+        width:110px;
+        height:110px;
+        object-fit:cover;
+        border-radius:12px;
+        border:3px solid #006400;
+        margin:10px auto 15px;
+        display:block;
+    "
+>
                         <p>
                             Your Application ID
                         </p>
