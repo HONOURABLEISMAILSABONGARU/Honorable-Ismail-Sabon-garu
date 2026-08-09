@@ -153,10 +153,29 @@ box-shadow:0 10px 30px rgba(0,0,0,.15);
 
 <h2>Application Submitted Successfully</h2>
 
+<img
+  src="${reader.result}"
+  alt="Applicant Passport"
+  style="
+    width:120px;
+    height:120px;
+    object-fit:cover;
+    border-radius:12px;
+    border:3px solid #006400;
+    margin-bottom:15px;
+  "
+>
+
 <p>Your Application ID</p>
 
-<h3 style="color:#006400;">${applicationId}</h3>
-
+<h3 style="
+  color:#006400;
+  font-size:24px;
+  letter-spacing:1px;
+  margin:8px 0 15px;
+">
+  ${applicationId}
+</h3>
 <p>Please save this Application ID. You will need the last 4 digits to print your ID Card.</p>
 
 <button onclick="location.reload()" style="
