@@ -3,8 +3,16 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebas
 import {
   getFirestore,
   collection,
-  addDoc
+  addDoc,
+  serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
+
+import {
+  getStorage,
+  ref,
+  uploadBytes,
+  getDownloadURL
+} from "https://www.gstatic.com/firebasejs/12.2.1/firebase-storage.js";
 
 
 const firebaseConfig = {
@@ -18,547 +26,388 @@ const firebaseConfig = {
 
 
 const app = initializeApp(firebaseConfig);
+
 const db = getFirestore(app);
+
+const storage = getStorage(app);
 
 const form = document.getElementById("registrationForm");
 
 
-// ========================================
-// APPLICATION ID
-// ========================================
-
 function generateApplicationId() {
 
-  let lastNumber =
-    Number(localStorage.getItem("lastApplicationId")) || 1000;
+    let lastNumber =
+        Number(localStorage.getItem("lastApplicationId")) || 1000;
 
-  lastNumber++;
+    lastNumber++;
 
-  localStorage.setItem(
-    "lastApplicationId",
-    lastNumber
-  );
+    localStorage.setItem(
+        "lastApplicationId",
+        lastNumber
+    );
 
-  return `TTT/SBNGR/${lastNumber}`;
+    return `TTT/SBNGR/${lastNumber}`;
 }
 
-
-// ========================================
-// COMPRESS PASSPORT PHOTO
-// ========================================
-
-function compressPassport(file) {
-
-  return new Promise((resolve, reject) => {
-
-    const reader = new FileReader();
-
-    reader.onload = function(event) {
-
-      const img = new Image();
-
-      img.onload = function() {
-
-        const canvas =
-          document.createElement("canvas");
-
-        const maxSize = 800;
-
-        let width = img.width;
-        let height = img.height;
-
-
-        if (width > height) {
-
-          if (width > maxSize) {
-
-            height =
-              height * (maxSize / width);
-
-            width = maxSize;
-
-          }
-
-        } else {
-
-          if (height > maxSize) {
-
-            width =
-              width * (maxSize / height);
-
-            height = maxSize;
-
-          }
-
-        }
-
-
-        canvas.width = width;
-        canvas.height = height;
-
-
-        const ctx =
-          canvas.getContext("2d");
-
-
-        ctx.drawImage(
-          img,
-          0,
-          0,
-          width,
-          height
-        );
-
-
-        canvas.toBlob(
-          function(blob) {
-
-            if (!blob) {
-
-              reject(
-                new Error(
-                  "Unable to compress passport photo."
-                )
-              );
-
-              return;
-            }
-
-
-            const compressedReader =
-              new FileReader();
-
-
-            compressedReader.onload =
-              function() {
-
-                resolve(
-                  compressedReader.result
-                );
-
-              };
-
-
-            compressedReader.onerror =
-              function() {
-
-                reject(
-                  new Error(
-                    "Unable to read compressed photo."
-                  )
-                );
-
-              };
-
-
-            compressedReader.readAsDataURL(blob);
-
-          },
-          "image/jpeg",
-          0.70
-        );
-
-      };
-
-
-      img.onerror = function() {
-
-        reject(
-          new Error(
-            "Invalid passport image."
-          )
-        );
-
-      };
-
-
-      img.src = event.target.result;
-
-    };
-
-
-    reader.onerror = function() {
-
-      reject(
-        new Error(
-          "Unable to read passport photo."
-        )
-      );
-
-    };
-
-
-    reader.readAsDataURL(file);
-
-  });
-
-}
-
-
-// ========================================
-// SUBMIT FORM
-// ========================================
 
 if (!form) {
 
-  console.log(
-    "Registration form not found."
-  );
+    console.log("Registration form not found.");
 
 } else {
 
+    form.addEventListener("submit", async function(e) {
 
-  form.addEventListener(
-    "submit",
-    async function(e) {
-
-      e.preventDefault();
+        e.preventDefault();
 
 
-      const passportInput =
-        document.getElementById("passport");
+        const passportInput =
+            document.getElementById("passport");
+
+        const passport =
+            passportInput.files[0];
 
 
-      const passport =
-        passportInput.files[0];
+        if (!passport) {
+
+            alert("Please upload your passport photo.");
+
+            return;
+        }
 
 
-      if (!passport) {
+        // Maximum 2MB
+        if (passport.size > 2 * 1024 * 1024) {
 
-        alert(
-          "Please upload your passport photo."
-        );
+            alert(
+                "Passport photo must not be larger than 2MB."
+            );
 
-        return;
-
-      }
-
-
-      // ==================================
-      // PROCESSING SCREEN
-      // ==================================
-
-      document.body.innerHTML = `
-
-        <div style="
-          min-height:100vh;
-          display:flex;
-          justify-content:center;
-          align-items:center;
-          flex-direction:column;
-          background:#f4f7f6;
-          font-family:Arial,sans-serif;
-          padding:20px;
-          text-align:center;
-        ">
+            return;
+        }
 
 
-          <div style="
-            width:65px;
-            height:65px;
-            border:7px solid #ddd;
-            border-top:7px solid #006400;
-            border-radius:50%;
-            animation:spin 0.8s linear infinite;
-          "></div>
-
-
-          <h2 style="
-            margin-top:20px;
-            color:#006400;
-          ">
-            Processing Your Application...
-          </h2>
-
-
-          <p style="
-            color:#555;
-          ">
-            Please wait...
-          </p>
-
-
-          <style>
-
-            @keyframes spin {
-
-              from {
-                transform:rotate(0deg);
-              }
-
-              to {
-                transform:rotate(360deg);
-              }
-
-            }
-
-          </style>
-
-        </div>
-
-      `;
-
-
-      try {
-
-
-        // ==================================
-        // COMPRESS PHOTO
-        // ==================================
-
-        const compressedPassport =
-          await compressPassport(passport);
-
-
-        // ==================================
-        // GENERATE APPLICATION ID
-        // ==================================
-
-        const applicationId =
-          generateApplicationId();
-
-
-        // ==================================
-        // REGISTRATION DATA
-        // ==================================
-
-        const registration = {
-
-          applicationId:
-            applicationId,
-
-          passport:
-            compressedPassport,
-
-          firstName:
-            document
-              .getElementById("firstName")
-              .value
-              .trim(),
-
-          middleName:
-            document
-              .getElementById("middleName")
-              .value
-              .trim(),
-
-          lastName:
-            document
-              .getElementById("lastName")
-              .value
-              .trim(),
-
-          address:
-            document
-              .getElementById("address")
-              .value
-              .trim(),
-
-          phoneNumber:
-            document
-              .getElementById("phoneNumber")
-              .value
-              .trim(),
-
-          gender:
-            document
-              .getElementById("gender")
-              .value,
-
-          state:
-            document
-              .getElementById("state")
-              .value,
-
-          lga:
-            document
-              .getElementById("lga")
-              .value,
-
-          ward:
-            document
-              .getElementById("ward")
-              .value,
-
-          status:
-            "Pending",
-
-          createdAt:
-            new Date()
-
-        };
-
-
-        // ==================================
-        // SAVE TO FIREBASE
-        // ==================================
-
-        await addDoc(
-          collection(
-            db,
-            "registrations"
-          ),
-          registration
-        );
-
-
-        // ==================================
-        // SUCCESS PAGE
-        // ==================================
-
+        // Show processing
         document.body.innerHTML = `
 
-          <div style="
+        <div style="
             min-height:100vh;
             display:flex;
             justify-content:center;
             align-items:center;
+            flex-direction:column;
             background:#f4f7f6;
+            font-family:Arial;
+            text-align:center;
             padding:20px;
-            font-family:Arial,sans-serif;
-          ">
-
+        ">
 
             <div style="
-              background:#fff;
-              padding:30px;
-              border-radius:20px;
-              max-width:420px;
-              width:100%;
-              text-align:center;
-              box-shadow:0 10px 30px rgba(0,0,0,.15);
-            ">
+                width:55px;
+                height:55px;
+                border:6px solid #ddd;
+                border-top:6px solid #006400;
+                border-radius:50%;
+                animation:spin 0.8s linear infinite;
+            "></div>
 
-
-              <div style="
-                color:green;
-                font-size:55px;
-                margin-bottom:10px;
-              ">
-                ✓
-              </div>
-
-
-              <h2 style="
-                margin:0 0 20px;
-                color:#222;
-              ">
-                Application Submitted Successfully
-              </h2>
-
-
-              <!-- PASSPORT PHOTO -->
-
-              <img
-                src="${compressedPassport}"
-                alt="Applicant Passport"
-                style="
-                  width:120px;
-                  height:120px;
-                  object-fit:cover;
-                  border-radius:12px;
-                  border:3px solid #006400;
-                  margin-bottom:15px;
-                "
-              >
-
-
-              <p style="
-                margin:5px 0;
-                color:#555;
-              ">
-                Your Application ID
-              </p>
-
-
-              <h3 style="
+            <h2 style="
+                margin-top:20px;
                 color:#006400;
-                font-size:24px;
-                letter-spacing:1px;
-                margin:8px 0 15px;
-              ">
-                ${applicationId}
-              </h3>
+            ">
+                Submitting...
+            </h2>
 
+            <p>
+                Please wait a moment.
+            </p>
 
-              <p style="
-                color:#555;
-                font-size:14px;
-                line-height:1.5;
-              ">
-                Please save this Application ID.
-                You will need it for your registration records.
-              </p>
+            <style>
+                @keyframes spin {
+                    from {
+                        transform:rotate(0deg);
+                    }
 
+                    to {
+                        transform:rotate(360deg);
+                    }
+                }
+            </style>
 
-              <button
-                onclick="location.reload()"
-                style="
-                  padding:12px 25px;
-                  background:#006400;
-                  color:#fff;
-                  border:none;
-                  border-radius:8px;
-                  cursor:pointer;
-                  font-weight:bold;
-                  margin-top:10px;
-                "
-              >
-                Back To Home
-              </button>
-
-
-            </div>
-
-          </div>
+        </div>
 
         `;
 
 
-      } catch (error) {
+        try {
+
+            // Create unique Application ID
+            const applicationId =
+                generateApplicationId();
 
 
-        console.error(
-          "Registration error:",
-          error
-        );
+            // Create unique image name
+            const imageName =
+                `passport_${applicationId.replaceAll("/", "_")}_${Date.now()}`;
 
 
-        alert(
-          "Registration failed: " +
-          error.message
-        );
+            // Firebase Storage location
+            const storageRef =
+                ref(storage, `passports/${imageName}`);
 
 
-        location.reload();
+            // Upload passport to Storage
+            await uploadBytes(
+                storageRef,
+                passport
+            );
 
-      }
 
-    }
+            // Get passport URL
+            const passportURL =
+                await getDownloadURL(storageRef);
 
-  );
+
+            // Save only URL in Firestore
+            const registration = {
+
+                applicationId: applicationId,
+
+                passport: passportURL,
+
+                firstName:
+                    document
+                    .getElementById("firstName")
+                    .value
+                    .trim(),
+
+                middleName:
+                    document
+                    .getElementById("middleName")
+                    .value
+                    .trim(),
+
+                lastName:
+                    document
+                    .getElementById("lastName")
+                    .value
+                    .trim(),
+
+                address:
+                    document
+                    .getElementById("address")
+                    .value
+                    .trim(),
+
+                phoneNumber:
+                    document
+                    .getElementById("phoneNumber")
+                    .value
+                    .trim(),
+
+                gender:
+                    document
+                    .getElementById("gender")
+                    .value,
+
+                state:
+                    document
+                    .getElementById("state")
+                    .value,
+
+                lga:
+                    document
+                    .getElementById("lga")
+                    .value,
+
+                ward:
+                    document
+                    .getElementById("ward")
+                    .value,
+
+                status: "Pending",
+
+                createdAt: serverTimestamp()
+            };
+
+
+            // Save registration
+            await addDoc(
+                collection(db, "registrations"),
+                registration
+            );
+
+
+            // SUCCESS PAGE
+            document.body.innerHTML = `
+
+            <div style="
+                min-height:100vh;
+                display:flex;
+                justify-content:center;
+                align-items:center;
+                background:#f4f7f6;
+                padding:20px;
+                font-family:Arial;
+            ">
+
+                <div style="
+                    background:white;
+                    padding:30px;
+                    border-radius:20px;
+                    max-width:420px;
+                    width:100%;
+                    text-align:center;
+                    box-shadow:0 10px 30px rgba(0,0,0,.15);
+                ">
+
+                    <img
+                        src="${passportURL}"
+                        style="
+                            width:110px;
+                            height:110px;
+                            object-fit:cover;
+                            border-radius:12px;
+                            border:3px solid #006400;
+                            margin-bottom:15px;
+                        "
+                    >
+
+                    <div style="
+                        font-size:55px;
+                        color:green;
+                    ">
+                        ✓
+                    </div>
+
+                    <h2>
+                        Application Submitted Successfully
+                    </h2>
+
+                    <p>
+                        Your Application ID
+                    </p>
+
+                    <h3 style="
+                        color:#006400;
+                        font-size:22px;
+                    ">
+                        ${applicationId}
+                    </h3>
+
+                    <p style="
+                        color:#555;
+                    ">
+                        Please save your Application ID
+                        for future reference.
+                    </p>
+
+                    <button
+                        onclick="location.reload()"
+                        style="
+                            padding:12px 25px;
+                            background:#006400;
+                            color:#fff;
+                            border:none;
+                            border-radius:8px;
+                            cursor:pointer;
+                            font-weight:bold;
+                        "
+                    >
+                        Back To Home
+                    </button>
+
+                </div>
+
+            </div>
+
+            `;
+
+
+        } catch (error) {
+
+            console.error(
+                "Registration error:",
+                error
+            );
+
+
+            document.body.innerHTML = `
+
+            <div style="
+                min-height:100vh;
+                display:flex;
+                justify-content:center;
+                align-items:center;
+                background:#f4f7f6;
+                padding:20px;
+                font-family:Arial;
+                text-align:center;
+            ">
+
+                <div style="
+                    background:white;
+                    padding:30px;
+                    border-radius:20px;
+                    max-width:420px;
+                    width:100%;
+                    box-shadow:0 10px 30px rgba(0,0,0,.15);
+                ">
+
+                    <div style="
+                        font-size:55px;
+                        color:#dc2626;
+                    ">
+                        ✕
+                    </div>
+
+                    <h2 style="
+                        color:#dc2626;
+                    ">
+                        Registration Failed
+                    </h2>
+
+                    <p>
+                        ${error.message}
+                    </p>
+
+                    <button
+                        onclick="location.reload()"
+                        style="
+                            padding:12px 25px;
+                            background:#006400;
+                            color:white;
+                            border:none;
+                            border-radius:8px;
+                            font-weight:bold;
+                        "
+                    >
+                        Try Again
+                    </button>
+
+                </div>
+
+            </div>
+
+            `;
+
+        }
+
+    });
 
 }
 
 
-// ========================================
-// ADMIN WARNING
-// ========================================
+window.adminWarning = function() {
 
-window.adminWarning =
-function() {
-
-  const ok =
-    confirm(
-      "Administrator Access Only!\n\nDo you want to continue to the Admin Login page?"
+    const ok = confirm(
+        "Administrator Access Only!\n\nDo you want to continue to the Admin Login page?"
     );
 
+    if (ok) {
 
-  if (ok) {
+        window.location.href = "admin.html";
 
-    window.location.href =
-      "admin.html";
-
-  }
+    }
 
 };
