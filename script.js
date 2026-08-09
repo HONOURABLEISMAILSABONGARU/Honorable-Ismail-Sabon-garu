@@ -3,8 +3,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebas
 import {
     getFirestore,
     collection,
-    addDoc,
-    serverTimestamp
+    addDoc
 } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
 
 
@@ -17,36 +16,46 @@ const firebaseConfig = {
     appId: "1:433993330936:web:1c289e2fdf819d4cb3cb0d"
 };
 
+
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+
+
+// ===============================
+// GET FORM
+// ===============================
 
 const form = document.getElementById("registrationForm");
 
 
+// ===============================
+// APPLICATION ID
+// ===============================
+
 function generateApplicationId() {
 
-    let lastNumber =
+    let number =
         Number(localStorage.getItem("lastApplicationId")) || 1000;
 
-    lastNumber++;
+    number++;
 
-    localStorage.setItem(
-        "lastApplicationId",
-        lastNumber
-    );
+    localStorage.setItem("lastApplicationId", number);
 
-    return `TTT/SBNGR/${lastNumber}`;
+    return `TTT/SBNGR/${number}`;
 }
 
 
-// Compress passport
+// ===============================
+// COMPRESS PASSPORT PHOTO
+// ===============================
+
 function compressImage(file) {
 
     return new Promise((resolve, reject) => {
 
         const reader = new FileReader();
 
-        reader.onload = function(e) {
+        reader.onload = function(event) {
 
             const img = new Image();
 
@@ -54,30 +63,28 @@ function compressImage(file) {
 
                 const canvas = document.createElement("canvas");
 
-                const maxWidth = 500;
-                const maxHeight = 500;
+                const maxWidth = 700;
+                const maxHeight = 700;
 
                 let width = img.width;
                 let height = img.height;
 
 
-                if (width > height) {
+                if (width > maxWidth) {
 
-                    if (width > maxWidth) {
-                        height =
-                            height * (maxWidth / width);
+                    height =
+                        height * (maxWidth / width);
 
-                        width = maxWidth;
-                    }
+                    width = maxWidth;
+                }
 
-                } else {
 
-                    if (height > maxHeight) {
-                        width =
-                            width * (maxHeight / height);
+                if (height > maxHeight) {
 
-                        height = maxHeight;
-                    }
+                    width =
+                        width * (maxHeight / height);
+
+                    height = maxHeight;
                 }
 
 
@@ -97,81 +104,140 @@ function compressImage(file) {
                 );
 
 
-                // JPEG quality
-                canvas.toBlob(
-                    function(blob) {
-
-                        if (!blob) {
-                            reject(
-                                new Error(
-                                    "Image compression failed."
-                                )
-                            );
-
-                            return;
-                        }
+                // JPEG compression
+                const compressed =
+                    canvas.toDataURL(
+                        "image/jpeg",
+                        0.65
+                    );
 
 
-                        const compressedReader =
-                            new FileReader();
-
-
-                        compressedReader.onload =
-                            function() {
-
-                                resolve(
-                                    compressedReader.result
-                                );
-
-                            };
-
-
-                        compressedReader.onerror =
-                            reject;
-
-                        compressedReader.readAsDataURL(blob);
-
-                    },
-                    "image/jpeg",
-                    0.65
-                );
-
+                resolve(compressed);
             };
 
 
-            img.onerror = reject;
+            img.onerror = function() {
 
-            img.src = e.target.result;
+                reject(
+                    new Error("Unable to read image.")
+                );
+            };
 
+
+            img.src = event.target.result;
         };
 
 
-        reader.onerror = reject;
+        reader.onerror = function() {
+
+            reject(
+                new Error("Unable to read passport photo.")
+            );
+        };
+
 
         reader.readAsDataURL(file);
 
     });
-
 }
 
 
-if (!form) {
+// ===============================
+// SHOW ERROR
+// ===============================
 
-    console.log(
-        "Registration form not found."
-    );
+function showError(message) {
 
-} else {
+    document.body.innerHTML = `
 
-    form.addEventListener(
-        "submit",
-        async function(e) {
+        <div style="
+            min-height:100vh;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            background:#f4f7f6;
+            padding:20px;
+            font-family:Arial;
+        ">
 
-            e.preventDefault();
+            <div style="
+                background:white;
+                padding:35px;
+                border-radius:20px;
+                max-width:420px;
+                width:100%;
+                text-align:center;
+                box-shadow:0 10px 30px rgba(0,0,0,.15);
+            ">
 
+                <div style="
+                    font-size:60px;
+                    color:#dc2626;
+                ">
+                    ✕
+                </div>
+
+                <h2 style="color:#dc2626;">
+                    Registration Failed
+                </h2>
+
+                <p style="
+                    color:#555;
+                    font-size:16px;
+                ">
+                    ${message}
+                </p>
+
+                <button
+                    onclick="location.reload()"
+                    style="
+                        padding:13px 25px;
+                        background:#006400;
+                        color:white;
+                        border:none;
+                        border-radius:8px;
+                        font-weight:bold;
+                        font-size:16px;
+                    "
+                >
+                    Try Again
+                </button>
+
+            </div>
+
+        </div>
+    `;
+}
+
+
+// ===============================
+// SUBMIT FORM
+// ===============================
+
+if (form) {
+
+    form.addEventListener("submit", async function(e) {
+
+        e.preventDefault();
+
+
+        try {
+
+            // -------------------------
+            // GET PASSPORT
+            // -------------------------
 
             const passportInput =
                 document.getElementById("passport");
+
+
+            if (!passportInput) {
+
+                throw new Error(
+                    "Passport field was not found."
+                );
+            }
+
 
             const passport =
                 passportInput.files[0];
@@ -187,162 +253,188 @@ if (!form) {
             }
 
 
-            // Maximum original file size = 2MB
-            if (
-                passport.size >
-                2 * 1024 * 1024
-            ) {
+            // -------------------------
+            // COMPRESS PHOTO
+            // -------------------------
 
-                alert(
-                    "Passport photo must not be larger than 2MB."
-                );
+            const compressedPassport =
+                await compressImage(passport);
 
-                return;
+
+            // -------------------------
+            // GET FORM VALUES
+            // -------------------------
+
+            const firstName =
+                document.getElementById("firstName");
+
+            const middleName =
+                document.getElementById("middleName");
+
+            const lastName =
+                document.getElementById("lastName");
+
+            const address =
+                document.getElementById("address");
+
+            const phoneNumber =
+                document.getElementById("phoneNumber");
+
+            const gender =
+                document.getElementById("gender");
+
+            const state =
+                document.getElementById("state");
+
+            const lga =
+                document.getElementById("lga");
+
+            const ward =
+                document.getElementById("ward");
+
+
+            // -------------------------
+            // CHECK FIELDS
+            // -------------------------
+
+            const fields = {
+                firstName,
+                middleName,
+                lastName,
+                address,
+                phoneNumber,
+                gender,
+                state,
+                lga,
+                ward
+            };
+
+
+            for (const [name, element] of Object.entries(fields)) {
+
+                if (!element) {
+
+                    throw new Error(
+                        `Form field "${name}" was not found.`
+                    );
+                }
             }
 
 
-            // Processing screen
+            // -------------------------
+            // SHOW SUBMITTING
+            // -------------------------
+
             document.body.innerHTML = `
 
-            <div style="
-                min-height:100vh;
-                display:flex;
-                justify-content:center;
-                align-items:center;
-                flex-direction:column;
-                background:#f4f7f6;
-                font-family:Arial;
-                text-align:center;
-                padding:20px;
-            ">
-
                 <div style="
-                    width:55px;
-                    height:55px;
-                    border:6px solid #ddd;
-                    border-top:6px solid #006400;
-                    border-radius:50%;
-                    animation:spin .7s linear infinite;
-                "></div>
-
-                <h2 style="
-                    color:#006400;
-                    margin-top:20px;
+                    min-height:100vh;
+                    display:flex;
+                    justify-content:center;
+                    align-items:center;
+                    flex-direction:column;
+                    background:#f4f7f6;
+                    font-family:Arial;
                 ">
-                    Processing...
-                </h2>
 
-                <p>
-                    Please wait...
-                </p>
+                    <div style="
+                        width:70px;
+                        height:70px;
+                        border:8px solid #ddd;
+                        border-top:8px solid #006400;
+                        border-radius:50%;
+                        animation:spin 1s linear infinite;
+                    "></div>
 
-                <style>
-                    @keyframes spin {
-                        from {
-                            transform:rotate(0deg);
+                    <h2 style="
+                        margin-top:20px;
+                        color:#006400;
+                    ">
+                        Submitting...
+                    </h2>
+
+                    <p>
+                        Please wait a moment.
+                    </p>
+
+                    <style>
+                        @keyframes spin {
+                            from {
+                                transform:rotate(0deg);
+                            }
+
+                            to {
+                                transform:rotate(360deg);
+                            }
                         }
+                    </style>
 
-                        to {
-                            transform:rotate(360deg);
-                        }
-                    }
-                </style>
-
-            </div>
-
+                </div>
             `;
 
 
-            try {
+            // -------------------------
+            // CREATE APPLICATION
+            // -------------------------
 
-                // Compress passport first
-                const compressedPassport =
-                    await compressImage(
-                        passport
-                    );
-
-
-                const applicationId =
-                    generateApplicationId();
+            const applicationId =
+                generateApplicationId();
 
 
-                const registration = {
+            const registration = {
 
-                    applicationId:
-                        applicationId,
+                applicationId: applicationId,
 
-                    passport:
-                        compressedPassport,
+                passport: compressedPassport,
 
-                    firstName:
-                        document
-                        .getElementById("firstName")
-                        .value
-                        .trim(),
+                firstName:
+                    firstName.value.trim(),
 
-                    middleName:
-                        document
-                        .getElementById("middleName")
-                        .value
-                        .trim(),
+                middleName:
+                    middleName.value.trim(),
 
-                    lastName:
-                        document
-                        .getElementById("lastName")
-                        .value
-                        .trim(),
+                lastName:
+                    lastName.value.trim(),
 
-                    address:
-                        document
-                        .getElementById("address")
-                        .value
-                        .trim(),
+                address:
+                    address.value.trim(),
 
-                    phoneNumber:
-                        document
-                        .getElementById("phoneNumber")
-                        .value
-                        .trim(),
+                phoneNumber:
+                    phoneNumber.value.trim(),
 
-                    gender:
-                        document
-                        .getElementById("gender")
-                        .value,
+                gender:
+                    gender.value,
 
-                    state:
-                        document
-                        .getElementById("state")
-                        .value,
+                state:
+                    state.value,
 
-                    lga:
-                        document
-                        .getElementById("lga")
-                        .value,
+                lga:
+                    lga.value,
 
-                    ward:
-                        document
-                        .getElementById("ward")
-                        .value,
+                ward:
+                    ward.value,
 
-                    status:
-                        "Pending",
+                status: "Pending",
 
-                    createdAt:
-                        serverTimestamp()
-                };
+                createdAt: new Date()
+            };
 
 
-                await addDoc(
-                    collection(
-                        db,
-                        "registrations"
-                    ),
-                    registration
-                );
+            // -------------------------
+            // SAVE TO FIREBASE
+            // -------------------------
+
+            await addDoc(
+                collection(db, "registrations"),
+                registration
+            );
 
 
-                // SUCCESS
-                document.body.innerHTML = `
+            // -------------------------
+            // SUCCESS — NO 4 SECOND DELAY
+            // -------------------------
+
+            document.body.innerHTML = `
 
                 <div style="
                     min-height:100vh;
@@ -361,51 +453,43 @@ if (!form) {
                         max-width:420px;
                         width:100%;
                         text-align:center;
-                        box-shadow:
-                        0 10px 30px
-                        rgba(0,0,0,.15);
+                        box-shadow:0 10px 30px rgba(0,0,0,.15);
                     ">
 
-                        <img
-                            src="${compressedPassport}"
-                            style="
-                                width:110px;
-                                height:110px;
-                                object-fit:cover;
-                                border-radius:12px;
-                                border:3px solid #006400;
-                                margin-bottom:15px;
-                            "
-                        >
-
                         <div style="
-                            font-size:55px;
+                            font-size:65px;
                             color:green;
                         ">
                             ✓
                         </div>
 
-                        <h2>
+                        <h2 style="
+                            color:#006400;
+                        ">
                             Application Submitted Successfully
                         </h2>
+
 
                         <p>
                             Your Application ID
                         </p>
 
-                        <h3 style="
+
+                        <h2 style="
                             color:#006400;
-                            font-size:22px;
+                            letter-spacing:1px;
                         ">
                             ${applicationId}
-                        </h3>
+                        </h2>
+
 
                         <p style="
                             color:#555;
+                            font-size:14px;
                         ">
-                            Please save your Application ID
-                            for future reference.
+                            Please save your Application ID.
                         </p>
+
 
                         <button
                             onclick="location.reload()"
@@ -424,86 +508,34 @@ if (!form) {
                     </div>
 
                 </div>
-
-                `;
-
-
-            } catch (error) {
-
-                console.error(
-                    "Registration error:",
-                    error
-                );
+            `;
 
 
-                document.body.innerHTML = `
+        } catch (error) {
 
-                <div style="
-                    min-height:100vh;
-                    display:flex;
-                    justify-content:center;
-                    align-items:center;
-                    background:#f4f7f6;
-                    padding:20px;
-                    font-family:Arial;
-                    text-align:center;
-                ">
+            console.error(
+                "Registration Error:",
+                error
+            );
 
-                    <div style="
-                        background:white;
-                        padding:30px;
-                        border-radius:20px;
-                        max-width:420px;
-                        width:100%;
-                        box-shadow:
-                        0 10px 30px
-                        rgba(0,0,0,.15);
-                    ">
-
-                        <div style="
-                            font-size:55px;
-                            color:#dc2626;
-                        ">
-                            ✕
-                        </div>
-
-                        <h2 style="
-                            color:#dc2626;
-                        ">
-                            Registration Failed
-                        </h2>
-
-                        <p>
-                            ${error.message}
-                        </p>
-
-                        <button
-                            onclick="location.reload()"
-                            style="
-                                padding:12px 25px;
-                                background:#006400;
-                                color:white;
-                                border:none;
-                                border-radius:8px;
-                                font-weight:bold;
-                            "
-                        >
-                            Try Again
-                        </button>
-
-                    </div>
-
-                </div>
-
-                `;
-
-            }
-
+            showError(
+                error.message
+            );
         }
-    );
 
+    });
+
+} else {
+
+    console.error(
+        "registrationForm was not found."
+    );
 }
 
+
+// ===============================
+// ADMIN LOGIN
+// ===============================
 
 window.adminWarning = function() {
 
@@ -512,6 +544,7 @@ window.adminWarning = function() {
     );
 
     if (ok) {
+
         window.location.href =
             "admin.html";
     }
