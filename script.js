@@ -8,7 +8,7 @@ import {
 
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDvjnz9N6Kfntjv8CaKK-6ENjjyYnMOWOE",
+  apiKey: "AIzaSyDvjnzN9K6fntjv8CaKK-6ENjjyYnMOWOE",
   authDomain: "honourable-ismail-sabon-garu.firebaseapp.com",
   projectId: "honourable-ismail-sabon-garu",
   storageBucket: "honourable-ismail-sabon-garu.firebasestorage.app",
@@ -16,10 +16,12 @@ const firebaseConfig = {
   appId: "1:433993330936:web:1c289e2fdf819d4cb3cb0d"
 };
 
+
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-const form = document.getElementById("registrationForm");
+const form =
+  document.getElementById("registrationForm");
 
 
 // ===============================
@@ -29,7 +31,9 @@ const form = document.getElementById("registrationForm");
 function generateApplicationId() {
 
   let lastNumber =
-    Number(localStorage.getItem("lastApplicationId")) || 1000;
+    Number(
+      localStorage.getItem("lastApplicationId")
+    ) || 1000;
 
   lastNumber++;
 
@@ -58,18 +62,23 @@ function compressImage(file) {
 
       img.onload = function() {
 
-        const canvas = document.createElement("canvas");
+        const canvas =
+          document.createElement("canvas");
 
         const maxSize = 600;
 
         let width = img.width;
         let height = img.height;
 
+
         if (width > height) {
 
           if (width > maxSize) {
+
             height =
-              Math.round(height * maxSize / width);
+              Math.round(
+                height * maxSize / width
+              );
 
             width = maxSize;
           }
@@ -77,18 +86,24 @@ function compressImage(file) {
         } else {
 
           if (height > maxSize) {
+
             width =
-              Math.round(width * maxSize / height);
+              Math.round(
+                width * maxSize / height
+              );
 
             height = maxSize;
           }
         }
 
+
         canvas.width = width;
         canvas.height = height;
 
+
         const ctx =
           canvas.getContext("2d");
+
 
         ctx.drawImage(
           img,
@@ -98,8 +113,9 @@ function compressImage(file) {
           height
         );
 
-        // JPEG compression
+
         let quality = 0.7;
+
 
         let compressed =
           canvas.toDataURL(
@@ -107,7 +123,7 @@ function compressImage(file) {
             quality
           );
 
-        // Keep reducing until small
+
         while (
           compressed.length > 220000 &&
           quality > 0.3
@@ -122,19 +138,25 @@ function compressImage(file) {
             );
         }
 
+
         resolve(compressed);
 
       };
 
+
       img.onerror = reject;
 
-      img.src = event.target.result;
+      img.src =
+        event.target.result;
     };
+
 
     reader.onerror = reject;
 
     reader.readAsDataURL(file);
+
   });
+
 }
 
 
@@ -157,21 +179,108 @@ if (!form) {
       e.preventDefault();
 
 
+      // ===============================
+      // GET ALL FORM ELEMENTS FIRST
+      // ===============================
+
+      const firstName =
+        document.getElementById("firstName");
+
+      const middleName =
+        document.getElementById("middleName");
+
+      const lastName =
+        document.getElementById("lastName");
+
+      const address =
+        document.getElementById("address");
+
+      const phoneNumber =
+        document.getElementById("phoneNumber");
+
+      const gender =
+        document.getElementById("gender");
+
+      const state =
+        document.getElementById("state");
+
+      const lga =
+        document.getElementById("lga");
+
+      const ward =
+        document.getElementById("ward");
+
       const passportInput =
         document.getElementById("passport");
 
 
-      if (!passportInput) {
+      // ===============================
+      // CHECK ELEMENTS
+      // ===============================
+
+      if (
+        !firstName ||
+        !middleName ||
+        !lastName ||
+        !address ||
+        !phoneNumber ||
+        !gender ||
+        !state ||
+        !lga ||
+        !ward ||
+        !passportInput
+      ) {
+
+        console.error(
+          "One or more HTML elements are missing."
+        );
 
         alert(
-          "Passport input not found."
+          "Form error. Please refresh the page and try again."
         );
 
         return;
       }
 
 
+      // ===============================
+      // GET VALUES BEFORE PAGE CHANGE
+      // ===============================
+
+      const firstNameValue =
+        firstName.value.trim();
+
+      const middleNameValue =
+        middleName.value.trim();
+
+      const lastNameValue =
+        lastName.value.trim();
+
+      const addressValue =
+        address.value.trim();
+
+      const phoneNumberValue =
+        phoneNumber.value.trim();
+
+      const genderValue =
+        gender.value;
+
+      const stateValue =
+        state.value;
+
+      const lgaValue =
+        lga.value;
+
+      const wardValue =
+        ward.value;
+
+
+      // ===============================
+      // PASSPORT
+      // ===============================
+
       const passport =
+        passportInput.files &&
         passportInput.files[0];
 
 
@@ -185,12 +294,36 @@ if (!form) {
       }
 
 
-      // Maximum original file size: 2MB
-
-      if (passport.size > 2 * 1024 * 1024) {
+      if (
+        passport.size >
+        2 * 1024 * 1024
+      ) {
 
         alert(
           "Passport photo must not be larger than 2MB."
+        );
+
+        return;
+      }
+
+
+      // ===============================
+      // VALIDATE REQUIRED VALUES
+      // ===============================
+
+      if (
+        !firstNameValue ||
+        !lastNameValue ||
+        !addressValue ||
+        !phoneNumberValue ||
+        !genderValue ||
+        !stateValue ||
+        !lgaValue ||
+        !wardValue
+      ) {
+
+        alert(
+          "Please complete all required fields."
         );
 
         return;
@@ -237,6 +370,7 @@ if (!form) {
 
           <style>
             @keyframes spin {
+
               from {
                 transform:rotate(0deg);
               }
@@ -244,6 +378,7 @@ if (!form) {
               to {
                 transform:rotate(360deg);
               }
+
             }
           </style>
 
@@ -253,66 +388,20 @@ if (!form) {
 
       try {
 
-        // Compress image first
+        // ===============================
+        // COMPRESS PHOTO
+        // ===============================
 
         const compressedPassport =
           await compressImage(passport);
 
 
+        // ===============================
+        // GENERATE APPLICATION ID
+        // ===============================
+
         const applicationId =
           generateApplicationId();
-
-
-        // ===============================
-        // GET FORM VALUES
-        // ===============================
-
-        const firstName =
-          document.getElementById("firstName");
-
-        const middleName =
-          document.getElementById("middleName");
-
-        const lastName =
-          document.getElementById("lastName");
-
-        const address =
-          document.getElementById("address");
-
-        const phoneNumber =
-          document.getElementById("phoneNumber");
-
-        const gender =
-          document.getElementById("gender");
-
-        const state =
-          document.getElementById("state");
-
-        const lga =
-          document.getElementById("lga");
-
-        const ward =
-          document.getElementById("ward");
-
-
-        // Check required elements
-
-        if (
-          !firstName ||
-          !middleName ||
-          !lastName ||
-          !address ||
-          !phoneNumber ||
-          !gender ||
-          !state ||
-          !lga ||
-          !ward
-        ) {
-
-          throw new Error(
-            "One or more form fields are missing. Please check your HTML IDs."
-          );
-        }
 
 
         // ===============================
@@ -322,55 +411,42 @@ if (!form) {
         const registration = {
 
           applicationId:
-
             applicationId,
 
           passport:
-
             compressedPassport,
 
           firstName:
-
-            firstName.value.trim(),
+            firstNameValue,
 
           middleName:
-
-            middleName.value.trim(),
+            middleNameValue,
 
           lastName:
-
-            lastName.value.trim(),
+            lastNameValue,
 
           address:
-
-            address.value.trim(),
+            addressValue,
 
           phoneNumber:
-
-            phoneNumber.value.trim(),
+            phoneNumberValue,
 
           gender:
-
-            gender.value,
+            genderValue,
 
           state:
-
-            state.value,
+            stateValue,
 
           lga:
-
-            lga.value,
+            lgaValue,
 
           ward:
-
-            ward.value,
+            wardValue,
 
           status:
-
             "Pending",
 
           createdAt:
-
             new Date()
 
         };
@@ -484,6 +560,7 @@ if (!form) {
             </div>
 
           </div>
+
         `;
 
 
@@ -555,6 +632,7 @@ if (!form) {
             </div>
 
           </div>
+
         `;
 
       }
@@ -572,9 +650,11 @@ if (!form) {
 window.adminWarning =
 function() {
 
-  const ok = confirm(
-    "Administrator Access Only!\n\nDo you want to continue to the Admin Login page?"
-  );
+  const ok =
+    confirm(
+      "Administrator Access Only!\n\nDo you want to continue to the Admin Login page?"
+    );
+
 
   if (ok) {
 
