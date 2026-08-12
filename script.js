@@ -20,8 +20,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-const form =
-  document.getElementById("registrationForm");
+const form = document.getElementById("registrationForm");
 
 
 // ===============================
@@ -31,9 +30,7 @@ const form =
 function generateApplicationId() {
 
   let lastNumber =
-    Number(
-      localStorage.getItem("lastApplicationId")
-    ) || 1000;
+    Number(localStorage.getItem("lastApplicationId")) || 1000;
 
   lastNumber++;
 
@@ -146,17 +143,14 @@ function compressImage(file) {
 
       img.onerror = reject;
 
-      img.src =
-        event.target.result;
+      img.src = event.target.result;
     };
 
 
     reader.onerror = reject;
 
     reader.readAsDataURL(file);
-
   });
-
 }
 
 
@@ -231,12 +225,8 @@ if (!form) {
         !passportInput
       ) {
 
-        console.error(
-          "One or more HTML elements are missing."
-        );
-
         alert(
-          "Form error. Please refresh the page and try again."
+          "Registration form is incomplete. Please refresh the page."
         );
 
         return;
@@ -244,7 +234,43 @@ if (!form) {
 
 
       // ===============================
-      // GET VALUES BEFORE PAGE CHANGE
+      // GET PASSPORT
+      // ===============================
+
+      const passport =
+        passportInput.files &&
+        passportInput.files[0];
+
+
+      if (!passport) {
+
+        alert(
+          "Please upload your passport photo."
+        );
+
+        return;
+      }
+
+
+      // ===============================
+      // CHECK FILE SIZE
+      // ===============================
+
+      if (
+        passport.size >
+        2 * 1024 * 1024
+      ) {
+
+        alert(
+          "Passport photo must not be larger than 2MB."
+        );
+
+        return;
+      }
+
+
+      // ===============================
+      // GET VALUES BEFORE BODY CHANGES
       // ===============================
 
       const firstNameValue =
@@ -273,61 +299,6 @@ if (!form) {
 
       const wardValue =
         ward.value;
-
-
-      // ===============================
-      // PASSPORT
-      // ===============================
-
-      const passport =
-        passportInput.files &&
-        passportInput.files[0];
-
-
-      if (!passport) {
-
-        alert(
-          "Please upload your passport photo."
-        );
-
-        return;
-      }
-
-
-      if (
-        passport.size >
-        2 * 1024 * 1024
-      ) {
-
-        alert(
-          "Passport photo must not be larger than 2MB."
-        );
-
-        return;
-      }
-
-
-      // ===============================
-      // VALIDATE REQUIRED VALUES
-      // ===============================
-
-      if (
-        !firstNameValue ||
-        !lastNameValue ||
-        !addressValue ||
-        !phoneNumberValue ||
-        !genderValue ||
-        !stateValue ||
-        !lgaValue ||
-        !wardValue
-      ) {
-
-        alert(
-          "Please complete all required fields."
-        );
-
-        return;
-      }
 
 
       // ===============================
@@ -370,7 +341,6 @@ if (!form) {
 
           <style>
             @keyframes spin {
-
               from {
                 transform:rotate(0deg);
               }
@@ -378,7 +348,6 @@ if (!form) {
               to {
                 transform:rotate(360deg);
               }
-
             }
           </style>
 
@@ -560,7 +529,6 @@ if (!form) {
             </div>
 
           </div>
-
         `;
 
 
@@ -601,11 +569,13 @@ if (!form) {
                 ✕
               </div>
 
+
               <h2 style="
                 color:#dc2626;
               ">
                 Registration Failed
               </h2>
+
 
               <p style="
                 color:#444;
@@ -613,6 +583,7 @@ if (!form) {
               ">
                 ${error.message}
               </p>
+
 
               <button
                 onclick="location.reload()"
@@ -632,7 +603,6 @@ if (!form) {
             </div>
 
           </div>
-
         `;
 
       }
@@ -650,10 +620,9 @@ if (!form) {
 window.adminWarning =
 function() {
 
-  const ok =
-    confirm(
-      "Administrator Access Only!\n\nDo you want to continue to the Admin Login page?"
-    );
+  const ok = confirm(
+    "Administrator Access Only!\n\nDo you want to continue to the Admin Login page?"
+  );
 
 
   if (ok) {
