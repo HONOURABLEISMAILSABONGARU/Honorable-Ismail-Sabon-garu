@@ -3,12 +3,14 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebas
 import {
   getFirestore,
   collection,
-  addDoc
+  addDoc,
+  doc,
+  runTransaction
 } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
 
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDvjnzN9K6fntjv8CaKK-6ENjjyYnMOWOE",
+  apiKey: "AIzaSyDvjn9N6Kfntjv8CaKK-6ENjjyYnMOWOE",
   authDomain: "honourable-ismail-sabon-garu.firebaseapp.com",
   projectId: "honourable-ismail-sabon-garu",
   storageBucket: "honourable-ismail-sabon-garu.firebasestorage.app",
@@ -20,26 +22,69 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-const form = document.getElementById("registrationForm");
+const form =
+  document.getElementById("registrationForm");
 
 
 // ===============================
 // APPLICATION ID
 // ===============================
+//
+// Last existing Application ID:
+// TTT/SBNGR/1001
+//
+// Next:
+// TTT/SBNGR/1002
+//
+// Firestore will control the counter
+// so different phones cannot create
+// the same Application ID.
+// ===============================
 
-function generateApplicationId() {
+async function generateApplicationId() {
 
-  let lastNumber =
-    Number(localStorage.getItem("lastApplicationId")) || 1000;
+  const counterRef =
+    doc(db, "counters", "applicationCounter");
 
-  lastNumber++;
+  return await runTransaction(
+    db,
+    async (transaction) => {
 
-  localStorage.setItem(
-    "lastApplicationId",
-    lastNumber
+      const counterSnapshot =
+        await transaction.get(counterRef);
+
+      let nextNumber;
+
+      if (!counterSnapshot.exists()) {
+
+        // Current last number is 1001
+        nextNumber = 1002;
+
+      } else {
+
+        const currentNumber =
+          Number(
+            counterSnapshot.data().lastNumber
+          ) || 1001;
+
+        nextNumber =
+          currentNumber + 1;
+      }
+
+
+      transaction.set(
+        counterRef,
+        {
+          lastNumber: nextNumber
+        }
+      );
+
+
+      return `TTT/SBNGR/${nextNumber}`;
+
+    }
   );
 
-  return `TTT/SBNGR/${lastNumber}`;
 }
 
 
@@ -51,106 +96,143 @@ function compressImage(file) {
 
   return new Promise((resolve, reject) => {
 
-    const reader = new FileReader();
-
-    reader.onload = function(event) {
-
-      const img = new Image();
-
-      img.onload = function() {
-
-        const canvas =
-          document.createElement("canvas");
-
-        const maxSize = 600;
-
-        let width = img.width;
-        let height = img.height;
+    const reader =
+      new FileReader();
 
 
-        if (width > height) {
+    reader.onload =
+      function(event) {
 
-          if (width > maxSize) {
+        const img =
+          new Image();
 
-            height =
-              Math.round(
-                height * maxSize / width
+
+        img.onload =
+          function() {
+
+            const canvas =
+              document.createElement(
+                "canvas"
               );
 
-            width = maxSize;
-          }
 
-        } else {
+            const maxSize = 600;
 
-          if (height > maxSize) {
+            let width =
+              img.width;
 
-            width =
-              Math.round(
-                width * maxSize / height
+            let height =
+              img.height;
+
+
+            if (width > height) {
+
+              if (width > maxSize) {
+
+                height =
+                  Math.round(
+                    height *
+                    maxSize /
+                    width
+                  );
+
+                width =
+                  maxSize;
+              }
+
+            } else {
+
+              if (height > maxSize) {
+
+                width =
+                  Math.round(
+                    width *
+                    maxSize /
+                    height
+                  );
+
+                height =
+                  maxSize;
+              }
+
+            }
+
+
+            canvas.width =
+              width;
+
+            canvas.height =
+              height;
+
+
+            const ctx =
+              canvas.getContext(
+                "2d"
               );
 
-            height = maxSize;
-          }
-        }
 
-
-        canvas.width = width;
-        canvas.height = height;
-
-
-        const ctx =
-          canvas.getContext("2d");
-
-
-        ctx.drawImage(
-          img,
-          0,
-          0,
-          width,
-          height
-        );
-
-
-        let quality = 0.7;
-
-
-        let compressed =
-          canvas.toDataURL(
-            "image/jpeg",
-            quality
-          );
-
-
-        while (
-          compressed.length > 220000 &&
-          quality > 0.3
-        ) {
-
-          quality -= 0.1;
-
-          compressed =
-            canvas.toDataURL(
-              "image/jpeg",
-              quality
+            ctx.drawImage(
+              img,
+              0,
+              0,
+              width,
+              height
             );
-        }
 
 
-        resolve(compressed);
+            let quality = 0.7;
+
+
+            let compressed =
+              canvas.toDataURL(
+                "image/jpeg",
+                quality
+              );
+
+
+            while (
+              compressed.length > 220000 &&
+              quality > 0.3
+            ) {
+
+              quality -= 0.1;
+
+              compressed =
+                canvas.toDataURL(
+                  "image/jpeg",
+                  quality
+                );
+
+            }
+
+
+            resolve(
+              compressed
+            );
+
+          };
+
+
+        img.onerror =
+          reject;
+
+
+        img.src =
+          event.target.result;
 
       };
 
 
-      img.onerror = reject;
-
-      img.src = event.target.result;
-    };
+    reader.onerror =
+      reject;
 
 
-    reader.onerror = reject;
+    reader.readAsDataURL(
+      file
+    );
 
-    reader.readAsDataURL(file);
   });
+
 }
 
 
@@ -174,38 +256,58 @@ if (!form) {
 
 
       // ===============================
-      // GET ALL FORM ELEMENTS FIRST
+      // GET FORM ELEMENTS
       // ===============================
 
       const firstName =
-        document.getElementById("firstName");
+        document.getElementById(
+          "firstName"
+        );
 
       const middleName =
-        document.getElementById("middleName");
+        document.getElementById(
+          "middleName"
+        );
 
       const lastName =
-        document.getElementById("lastName");
+        document.getElementById(
+          "lastName"
+        );
 
       const address =
-        document.getElementById("address");
+        document.getElementById(
+          "address"
+        );
 
       const phoneNumber =
-        document.getElementById("phoneNumber");
+        document.getElementById(
+          "phoneNumber"
+        );
 
       const gender =
-        document.getElementById("gender");
+        document.getElementById(
+          "gender"
+        );
 
       const state =
-        document.getElementById("state");
+        document.getElementById(
+          "state"
+        );
 
       const lga =
-        document.getElementById("lga");
+        document.getElementById(
+          "lga"
+        );
 
       const ward =
-        document.getElementById("ward");
+        document.getElementById(
+          "ward"
+        );
 
       const passportInput =
-        document.getElementById("passport");
+        document.getElementById(
+          "passport"
+        );
 
 
       // ===============================
@@ -270,7 +372,7 @@ if (!form) {
 
 
       // ===============================
-      // GET VALUES BEFORE BODY CHANGES
+      // GET VALUES
       // ===============================
 
       const firstNameValue =
@@ -352,6 +454,7 @@ if (!form) {
           </style>
 
         </div>
+
       `;
 
 
@@ -362,7 +465,9 @@ if (!form) {
         // ===============================
 
         const compressedPassport =
-          await compressImage(passport);
+          await compressImage(
+            passport
+          );
 
 
         // ===============================
@@ -370,7 +475,7 @@ if (!form) {
         // ===============================
 
         const applicationId =
-          generateApplicationId();
+          await generateApplicationId();
 
 
         // ===============================
@@ -529,6 +634,7 @@ if (!form) {
             </div>
 
           </div>
+
         `;
 
 
@@ -603,6 +709,7 @@ if (!form) {
             </div>
 
           </div>
+
         `;
 
       }
@@ -620,9 +727,10 @@ if (!form) {
 window.adminWarning =
 function() {
 
-  const ok = confirm(
-    "Administrator Access Only!\n\nDo you want to continue to the Admin Login page?"
-  );
+  const ok =
+    confirm(
+      "Administrator Access Only!\n\nDo you want to continue to the Admin Login page?"
+    );
 
 
   if (ok) {
