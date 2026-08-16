@@ -29,38 +29,20 @@ const form =
 // ===============================
 // APPLICATION ID
 // ===============================
-//
-// Current last Application ID:
-// TTT/SBNGR/1001
-//
-// Next:
-// TTT/SBNGR/1002
-//
-// Firestore controls the counter.
-// ===============================
 
 async function generateApplicationId() {
 
   const counterRef =
-    doc(
-      db,
-      "counters",
-      "applicationCounter"
-    );
-
+    doc(db, "counters", "applicationCounter");
 
   return await runTransaction(
     db,
     async (transaction) => {
 
       const counterSnapshot =
-        await transaction.get(
-          counterRef
-        );
-
+        await transaction.get(counterRef);
 
       let nextNumber;
-
 
       if (!counterSnapshot.exists()) {
 
@@ -73,12 +55,9 @@ async function generateApplicationId() {
             counterSnapshot.data().lastNumber
           ) || 1001;
 
-
         nextNumber =
           currentNumber + 1;
-
       }
-
 
       transaction.set(
         counterRef,
@@ -86,7 +65,6 @@ async function generateApplicationId() {
           lastNumber: nextNumber
         }
       );
-
 
       return `TTT/SBNGR/${nextNumber}`;
 
@@ -102,149 +80,128 @@ async function generateApplicationId() {
 
 function compressImage(file) {
 
-  return new Promise(
-    (resolve, reject) => {
+  return new Promise((resolve, reject) => {
 
-      const reader =
-        new FileReader();
+    const reader =
+      new FileReader();
 
+    reader.onload =
+      function(event) {
 
-      reader.onload =
-        function(event) {
+        const img =
+          new Image();
 
-          const img =
-            new Image();
+        img.onload =
+          function() {
 
+            const canvas =
+              document.createElement("canvas");
 
-          img.onload =
-            function() {
+            const maxSize = 600;
 
-              const canvas =
-                document.createElement(
-                  "canvas"
-                );
+            let width =
+              img.width;
 
-
-              const maxSize = 600;
-
-              let width =
-                img.width;
-
-              let height =
-                img.height;
+            let height =
+              img.height;
 
 
-              if (width > height) {
+            if (width > height) {
 
-                if (width > maxSize) {
+              if (width > maxSize) {
 
-                  height =
-                    Math.round(
-                      height *
-                      maxSize /
-                      width
-                    );
+                height =
+                  Math.round(
+                    height *
+                    maxSize /
+                    width
+                  );
 
-                  width =
-                    maxSize;
-
-                }
-
-              } else {
-
-                if (height > maxSize) {
-
-                  width =
-                    Math.round(
-                      width *
-                      maxSize /
-                      height
-                    );
-
-                  height =
-                    maxSize;
-
-                }
-
+                width =
+                  maxSize;
               }
 
+            } else {
 
-              canvas.width =
-                width;
+              if (height > maxSize) {
 
-              canvas.height =
-                height;
+                width =
+                  Math.round(
+                    width *
+                    maxSize /
+                    height
+                  );
+
+                height =
+                  maxSize;
+              }
+            }
 
 
-              const ctx =
-                canvas.getContext(
-                  "2d"
-                );
+            canvas.width =
+              width;
+
+            canvas.height =
+              height;
 
 
-              ctx.drawImage(
-                img,
-                0,
-                0,
-                width,
-                height
+            const ctx =
+              canvas.getContext("2d");
+
+
+            ctx.drawImage(
+              img,
+              0,
+              0,
+              width,
+              height
+            );
+
+
+            let quality = 0.7;
+
+            let compressed =
+              canvas.toDataURL(
+                "image/jpeg",
+                quality
               );
 
 
-              let quality = 0.7;
+            while (
+              compressed.length > 220000 &&
+              quality > 0.3
+            ) {
 
+              quality -= 0.1;
 
-              let compressed =
+              compressed =
                 canvas.toDataURL(
                   "image/jpeg",
                   quality
                 );
+            }
 
 
-              while (
-                compressed.length > 220000 &&
-                quality > 0.3
-              ) {
+            resolve(compressed);
 
-                quality -= 0.1;
+          };
 
 
-                compressed =
-                  canvas.toDataURL(
-                    "image/jpeg",
-                    quality
-                  );
+        img.onerror =
+          reject;
 
-              }
+        img.src =
+          event.target.result;
 
-
-              resolve(
-                compressed
-              );
-
-            };
+      };
 
 
-          img.onerror =
-            reject;
+    reader.onerror =
+      reject;
 
+    reader.readAsDataURL(file);
 
-          img.src =
-            event.target.result;
-
-        };
-
-
-      reader.onerror =
-        reject;
-
-
-      reader.readAsDataURL(
-        file
-      );
-
-    }
-  );
+  });
 
 }
 
@@ -273,60 +230,37 @@ if (!form) {
       // ===============================
 
       const firstName =
-        document.getElementById(
-          "firstName"
-        );
+        document.getElementById("firstName");
 
       const middleName =
-        document.getElementById(
-          "middleName"
-        );
+        document.getElementById("middleName");
 
       const lastName =
-        document.getElementById(
-          "lastName"
-        );
+        document.getElementById("lastName");
 
       const address =
-        document.getElementById(
-          "address"
-        );
+        document.getElementById("address");
 
       const phoneNumber =
-        document.getElementById(
-          "phoneNumber"
-        );
+        document.getElementById("phoneNumber");
 
       const gender =
-        document.getElementById(
-          "gender"
-        );
+        document.getElementById("gender");
 
       const state =
-        document.getElementById(
-          "state"
-        );
+        document.getElementById("state");
 
       const lga =
-        document.getElementById(
-          "lga"
-        );
+        document.getElementById("lga");
 
       const ward =
-        document.getElementById(
-          "ward"
-        );
+        document.getElementById("ward");
 
       const passportInput =
-        document.getElementById(
-          "passport"
-        );
+        document.getElementById("passport");
 
-      // NEW: OPTIONAL VOTER'S CARD
       const voterCardInput =
-        document.getElementById(
-          "voterCard"
-        );
+        document.getElementById("voterCard");
 
 
       // ===============================
@@ -374,7 +308,7 @@ if (!form) {
 
 
       // ===============================
-      // CHECK PASSPORT SIZE
+      // PASSPORT SIZE
       // ===============================
 
       if (
@@ -391,7 +325,8 @@ if (!form) {
 
 
       // ===============================
-      // GET OPTIONAL VOTER'S CARD
+      // GET VOTER'S CARD
+      // OPTIONAL
       // ===============================
 
       const voterCard =
@@ -401,8 +336,7 @@ if (!form) {
 
 
       // ===============================
-      // CHECK VOTER'S CARD SIZE
-      // ONLY IF UPLOADED
+      // VOTER'S CARD SIZE
       // ===============================
 
       if (
@@ -513,14 +447,11 @@ if (!form) {
         // ===============================
 
         const compressedPassport =
-          await compressImage(
-            passport
-          );
+          await compressImage(passport);
 
 
         // ===============================
         // COMPRESS VOTER'S CARD
-        // ONLY IF PROVIDED
         // ===============================
 
         let compressedVoterCard = "";
@@ -798,7 +729,7 @@ function() {
 
   const ok =
     confirm(
-      "Administrator Access Only!\n\nDo you want to continue to the Admin Login page?"
+      "Admin Access Only!\n\nDo you want to continue to the Admin Login page?"
     );
 
 
