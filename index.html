@@ -103,16 +103,10 @@
       box-shadow: 0 0 0 2px rgba(0,100,0,.08);
     }
 
-    .passport-box {
-      text-align: center;
-      border: 2px dashed #006400;
-      border-radius: 12px;
-      padding: 18px;
-    }
-
+    .passport-box,
     .voter-box {
       text-align: center;
-      border: 2px dashed #777;
+      border: 2px dashed #006400;
       border-radius: 12px;
       padding: 18px;
     }
@@ -125,14 +119,7 @@
       object-fit: cover;
       border-radius: 10px;
       margin: 10px auto;
-    }
-
-    #passportPreview {
       border: 2px solid #006400;
-    }
-
-    #voterCardPreview {
-      border: 2px solid #777;
     }
 
     .submit-btn {
@@ -376,9 +363,7 @@
         </div>
 
 
-        <!-- ========================= -->
         <!-- PASSPORT PHOTO - REQUIRED -->
-        <!-- ========================= -->
 
         <div class="field">
 
@@ -418,9 +403,7 @@
         </div>
 
 
-        <!-- ========================= -->
         <!-- VOTER'S CARD - OPTIONAL -->
-        <!-- ========================= -->
 
         <div class="field">
 
@@ -606,9 +589,6 @@
             this.files && this.files[0];
 
 
-          // Optional field:
-          // If no file, do nothing.
-
           if (!file) {
 
             voterCardPreview.style.display =
@@ -621,8 +601,6 @@
             return;
           }
 
-
-          // Maximum 2MB
 
           if (
             file.size >
