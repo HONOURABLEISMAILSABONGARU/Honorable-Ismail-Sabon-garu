@@ -264,11 +264,14 @@ function createApplicantCard(item) {
 
   card.style.cssText = `
     background:#fff;
-    padding:15px;
-    margin-bottom:15px;
-    border-radius:14px;
-    box-shadow:0 2px 8px rgba(0,0,0,.10);
-  `;
+    padding:10px;
+    margin-bottom:10px;
+    border-radius:12px;
+    box-shadow:0 2px 6px rgba(0,0,0,.10);
+    max-width:360px;
+    margin-left:auto;
+    margin-right:auto;
+`;
 
 
   card.innerHTML = `
@@ -286,8 +289,8 @@ function createApplicantCard(item) {
         alt="Applicant Passport"
         loading="lazy"
         style="
-          width:70px;
-          height:70px;
+          width:58px;
+          height:58px;
           object-fit:cover;
           border-radius:10px;
           border:2px solid #006400;
@@ -376,8 +379,8 @@ function createApplicantCard(item) {
             loading="lazy"
             style="
               width:100%;
-              max-width:500px;
-              max-height:350px;
+              max-width:320px;
+              max-height:220px;
               object-fit:contain;
               display:block;
               margin:auto;
