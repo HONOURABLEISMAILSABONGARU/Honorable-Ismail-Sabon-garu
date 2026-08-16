@@ -75,10 +75,15 @@
       margin-bottom: 7px;
     }
 
-    /* Required star */
     .required-star {
       color: red;
       font-weight: bold;
+    }
+
+    .optional-text {
+      color: #777;
+      font-size: 13px;
+      font-weight: normal;
     }
 
     input,
@@ -105,14 +110,29 @@
       padding: 18px;
     }
 
-    #passportPreview {
+    .voter-box {
+      text-align: center;
+      border: 2px dashed #777;
+      border-radius: 12px;
+      padding: 18px;
+    }
+
+    #passportPreview,
+    #voterCardPreview {
       display: none;
       width: 120px;
       height: 120px;
       object-fit: cover;
       border-radius: 10px;
       margin: 10px auto;
+    }
+
+    #passportPreview {
       border: 2px solid #006400;
+    }
+
+    #voterCardPreview {
+      border: 2px solid #777;
     }
 
     .submit-btn {
@@ -356,10 +376,15 @@
         </div>
 
 
+        <!-- ========================= -->
+        <!-- PASSPORT PHOTO - REQUIRED -->
+        <!-- ========================= -->
+
         <div class="field">
 
           <label>
-            Passport Photo <span class="required-star">*</span>
+            Passport Photo
+            <span class="required-star">*</span>
           </label>
 
           <div class="passport-box">
@@ -386,6 +411,49 @@
             >
               JPG or PNG only.
               Maximum size: 2MB.
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <!-- ========================= -->
+        <!-- VOTER'S CARD - OPTIONAL -->
+        <!-- ========================= -->
+
+        <div class="field">
+
+          <label>
+            Voter's Card Photo
+            <span class="optional-text">(Optional)</span>
+          </label>
+
+          <div class="voter-box">
+
+            <input
+              id="voterCard"
+              name="voterCard"
+              type="file"
+              accept=".jpg,.jpeg,.png,image/jpeg,image/png"
+            >
+
+            <img
+              id="voterCardPreview"
+              alt="Voter's Card Preview"
+            >
+
+            <div
+              style="
+                font-size:13px;
+                color:#666;
+                margin-top:8px;
+              "
+            >
+              JPG or PNG only.
+              Maximum size: 2MB.
+              <br>
+              You may leave this blank.
             </div>
 
           </div>
@@ -436,6 +504,10 @@
 
 
   <script>
+
+    // ===============================
+    // PASSPORT PREVIEW
+    // ===============================
 
     const passportInput =
       document.getElementById("passport");
@@ -512,6 +584,91 @@
 
     }
 
+
+    // ===============================
+    // VOTER'S CARD PREVIEW
+    // ===============================
+
+    const voterCardInput =
+      document.getElementById("voterCard");
+
+    const voterCardPreview =
+      document.getElementById("voterCardPreview");
+
+
+    if (voterCardInput && voterCardPreview) {
+
+      voterCardInput.addEventListener(
+        "change",
+        function () {
+
+          const file =
+            this.files && this.files[0];
+
+
+          // Optional field:
+          // If no file, do nothing.
+
+          if (!file) {
+
+            voterCardPreview.style.display =
+              "none";
+
+            voterCardPreview.removeAttribute(
+              "src"
+            );
+
+            return;
+          }
+
+
+          // Maximum 2MB
+
+          if (
+            file.size >
+            2 * 1024 * 1024
+          ) {
+
+            alert(
+              "Voter's Card photo must not be larger than 2MB."
+            );
+
+            this.value = "";
+
+            voterCardPreview.style.display =
+              "none";
+
+            voterCardPreview.removeAttribute(
+              "src"
+            );
+
+            return;
+          }
+
+
+          const reader =
+            new FileReader();
+
+
+          reader.onload =
+            function (e) {
+
+              voterCardPreview.src =
+                e.target.result;
+
+              voterCardPreview.style.display =
+                "block";
+
+            };
+
+
+          reader.readAsDataURL(file);
+
+        }
+      );
+
+    }
+
   </script>
 
 
@@ -526,4 +683,4 @@
 
 
 </body>
-                                                        </html>
+  </html>
